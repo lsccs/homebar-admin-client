@@ -6,7 +6,7 @@ export default antfu({
   stylistic: true,
   rules: {
     'n/prefer-global/process': 'off',
-    'no-undef': 'error',
+    'no-undef': 'off',
     'no-fallthrough': 'off',
     'vue/block-order': 'off',
     '@typescript-eslint/no-this-alias': 'off',

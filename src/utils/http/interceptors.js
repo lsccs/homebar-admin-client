@@ -7,26 +7,20 @@
  * Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
  **********************************/
 
-import { useAuthStore } from '@/store'
 import { resolveResError } from './helpers'
 
 export function setupInterceptors(axiosInstance) {
-  const SUCCESS_CODES = [0, 200]
   function resResolve(response) {
-    const { data, status, config, statusText, headers } = response
-    if (headers['content-type']?.includes('json')) {
-      if (SUCCESS_CODES.includes(data?.code)) {
-        return Promise.resolve(data)
-      }
-      const code = data?.code ?? status
+    const { data, status, config, statusText } = response
 
-      const needTip = config?.needTip !== false
+    const needTip = config?.needTip !== false
 
-      // 根据code处理对应的操作，并返回处理后的message
-      const message = resolveResError(code, data?.message ?? statusText, needTip)
-
-      return Promise.reject({ code, message, error: data ?? response })
+    // 根据code处理对应的操作，并返回处理后的message
+    if (data.code !== 200 || status !== 200) {
+      resolveResError(data.code || status, data?.message ?? statusText, needTip)
+      return Promise.reject(null)
     }
+
     return Promise.resolve(data ?? response)
   }
 
@@ -39,12 +33,7 @@ function reqResolve(config) {
   if (config.needToken === false) {
     return config
   }
-
-  const { accessToken } = useAuthStore()
-  if (accessToken) {
-    // token: Bearer + xxx
-    config.headers.Authorization = `Bearer ${accessToken}`
-  }
+  // token 为cookie自动携带
 
   return config
 }

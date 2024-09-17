@@ -1,11 +1,3 @@
-<!--------------------------------
- - @Author: Ronnie Zhang
- - @LastEditor: Ronnie Zhang
- - @LastEditTime: 2023/12/05 21:28:36
- - @Email: zclzone@outlook.com
- - Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
- --------------------------------->
-
 <template>
   <div class="wh-full flex-col bg-[url(@/assets/images/login_bg.webp)] bg-cover">
     <div
@@ -78,15 +70,6 @@
           <n-button
             class="h-40 flex-1 rounded-5 text-16"
             type="primary"
-            ghost
-            @click="quickLogin()"
-          >
-            一键体验
-          </n-button>
-
-          <n-button
-            class="ml-32 h-40 flex-1 rounded-5 text-16"
-            type="primary"
             :loading="loading"
             @click="handleLogin()"
           >
@@ -118,7 +101,9 @@ const loginInfo = ref({
 
 const captchaUrl = ref('')
 const initCaptcha = throttle(() => {
-  captchaUrl.value = `${import.meta.env.VITE_AXIOS_BASE_URL}/auth/captcha?${Date.now()}`
+  api.getCapthcha().then((res) => {
+    captchaUrl.value = res.data
+  })
 }, 500)
 
 const localLoginInfo = lStorage.get('loginInfo')
@@ -127,12 +112,6 @@ if (localLoginInfo) {
   loginInfo.value.password = localLoginInfo.password || ''
 }
 initCaptcha()
-
-function quickLogin() {
-  loginInfo.value.username = 'admin'
-  loginInfo.value.password = '123456'
-  handleLogin(true)
-}
 
 const isRemember = useStorage('isRemember', true)
 const loading = ref(false)
@@ -166,8 +145,8 @@ async function handleLogin(isQuick) {
   loading.value = false
 }
 
-async function onLoginSuccess(data = {}) {
-  authStore.setToken(data)
+async function onLoginSuccess() {
+  authStore.resetToken()
   $message.loading('登录中...', { key: 'login' })
   try {
     $message.success('登录成功', { key: 'login' })

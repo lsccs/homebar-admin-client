@@ -10,7 +10,7 @@ import { request } from '@/utils'
 
 export default {
   // 获取用户信息
-  getUser: () => request.get('/user/detail'),
+  getUser: () => request.get('/admin/user/detail'),
   // 刷新token
   refreshToken: () => request.get('/auth/refresh/token'),
   // 登出

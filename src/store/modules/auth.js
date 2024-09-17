@@ -1,24 +1,14 @@
-/**********************************
- * @Author: Ronnie Zhang
- * @LastEditor: Ronnie Zhang
- * @LastEditTime: 2023/12/05 21:25:39
- * @Email: zclzone@outlook.com
- * Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
- **********************************/
-
 import { usePermissionStore, useRouterStore, useTabStore, useUserStore } from '@/store'
+import Cookies from 'js-cookie'
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    accessToken: undefined,
+    accessToken: Cookies.get('satoken'),
   }),
   actions: {
-    setToken({ accessToken }) {
-      this.accessToken = accessToken
-    },
     resetToken() {
-      this.$reset()
+      this.accessToken = Cookies.get('satoken')
     },
     toLogin() {
       const { router, route } = useRouterStore()
@@ -27,10 +17,8 @@ export const useAuthStore = defineStore('auth', {
         query: route.query,
       })
     },
-    async switchCurrentRole(data) {
+    async switchCurrentRole() {
       this.resetLoginState()
-      await nextTick()
-      this.setToken(data)
     },
     resetLoginState() {
       const { resetUser } = useUserStore()
@@ -45,7 +33,6 @@ export const useAuthStore = defineStore('auth', {
       resetPermission()
       // 重置Tabs
       resetTabs()
-      // 重置token
       this.resetToken()
     },
     async logout() {
