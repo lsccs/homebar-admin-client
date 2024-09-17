@@ -84,12 +84,10 @@
 </template>
 
 <script setup>
-import { useAuthStore } from '@/store'
 import { lStorage, throttle } from '@/utils'
 import { useStorage } from '@vueuse/core'
 import api from './api'
 
-const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 const title = import.meta.env.VITE_TITLE
@@ -146,7 +144,6 @@ async function handleLogin(isQuick) {
 }
 
 async function onLoginSuccess() {
-  authStore.resetToken()
   $message.loading('登录中...', { key: 'login' })
   try {
     $message.success('登录成功', { key: 'login' })

@@ -54,15 +54,6 @@
           >
             开发文档
           </n-button>
-          <n-button
-            type="primary"
-            class="ml-12"
-            tag="a"
-            href="https://github.com/zclzone/vue-naive-admin/tree/2.x"
-            target="__blank"
-          >
-            代码仓库
-          </n-button>
         </footer>
       </n-card>
     </div>

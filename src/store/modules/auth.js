@@ -3,12 +3,10 @@ import Cookies from 'js-cookie'
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    accessToken: Cookies.get('satoken'),
-  }),
+  state: () => ({}),
   actions: {
-    resetToken() {
-      this.accessToken = Cookies.get('satoken')
+    getToken() {
+      return Cookies.get('satoken')
     },
     toLogin() {
       const { router, route } = useRouterStore()
@@ -16,6 +14,9 @@ export const useAuthStore = defineStore('auth', {
         path: '/login',
         query: route.query,
       })
+    },
+    clearToken() {
+      Cookies.remove('satoken')
     },
     async switchCurrentRole() {
       this.resetLoginState()
@@ -33,10 +34,9 @@ export const useAuthStore = defineStore('auth', {
       resetPermission()
       // 重置Tabs
       resetTabs()
-      this.resetToken()
     },
     async logout() {
-      this.resetLoginState()
+      this.clearToken()
       this.toLogin()
     },
   },
