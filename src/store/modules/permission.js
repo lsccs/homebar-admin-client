@@ -26,10 +26,10 @@ export const usePermissionStore = defineStore('permission', {
         .sort((a, b) => a.order - b.order)
     },
     getMenuItem(item, parent) {
-      const route = this.generateRoute(item, item.show ? null : parent?.key)
+      const route = this.generateRoute(item, item.can_show ? null : parent?.key)
       if (item.enable && route.path && !route.path.startsWith('http'))
         this.accessRoutes.push(route)
-      if (!item.show)
+      if (!item.can_show)
         return null
       const menuItem = {
         label: route.meta.title,

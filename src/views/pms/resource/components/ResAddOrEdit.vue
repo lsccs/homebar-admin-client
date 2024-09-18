@@ -98,7 +98,7 @@
           <template #label>
             <QuestionLabel label="显示状态" content="控制是否在菜单栏显示，不影响路由注册" />
           </template>
-          <n-switch v-model:value="modalForm.show">
+          <n-switch v-model:value="modalForm.can_show">
             <template #checked>
               显示
             </template>

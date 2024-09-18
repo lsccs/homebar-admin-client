@@ -92,8 +92,8 @@ const props = defineProps({
   /**
    * ! 约定接口入参出参
    * 分页模式需约定分页接口入参
-   *    @pageSize 分页参数：一页展示多少条，默认10
-   *    @pageNo   分页参数：页码，默认1
+   *    @limit 分页参数：一页展示多少条，默认10
+   *    @page   分页参数：页码，默认1
    * 需约定接口出参
    *    @pageData 分页模式必须,非分页模式如果没有pageData则取上一层data
    *    @total    分页模式必须，非分页模式如果没有total则取上一层data.length
@@ -131,14 +131,20 @@ async function handleQuery() {
     let paginationParams = {}
     // 如果非分页模式或者使用前端分页,则无需传分页参数
     if (props.isPagination && props.remote) {
-      paginationParams = { pageNo: pagination.page, pageSize: pagination.pageSize }
+      paginationParams = { page: pagination.page, limit: pagination.pageSize }
     }
+    const query = { ...props.queryItems }
+    const filters = Object.keys(query).reduce((acc, key) => {
+      acc[key] = query[key] == null ? undefined : query[key]
+      return acc
+    }, {})
+
     const { data } = await props.getData({
-      ...props.queryItems,
+      filters,
       ...paginationParams,
     })
-    tableData.value = data?.pageData || data
-    pagination.itemCount = data.total ?? data.length
+    tableData.value = data.list
+    pagination.itemCount = data.total
     if (pagination.itemCount && !tableData.value.length && pagination.page > 1) {
       // 如果当前页数据为空，且总条数不为0，则返回上一页数据
       onPageChange(pagination.page - 1)

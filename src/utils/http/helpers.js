@@ -62,6 +62,6 @@ export function resolveResError(code, message, needTip = true) {
       message = message ?? `【${code}】: 未知异常!`
       break
   }
-  needTip && window.$message?.error(message)
+  window.$message?.error(message)
   return message
 }

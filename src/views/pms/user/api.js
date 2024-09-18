@@ -9,11 +9,11 @@
 import { request } from '@/utils'
 
 export default {
-  create: data => request.post('/user', data),
-  read: (params = {}) => request.get('/user', { params }),
-  update: data => request.patch(`/user/${data.id}`, data),
-  delete: id => request.delete(`/user/${id}`),
-  resetPwd: (id, data) => request.patch(`/user/password/reset/${id}`, data),
+  create: data => request.post('/admin/user/add', data),
+  read: (data = {}) => request.post('/admin/user/list', data),
+  update: data => request.put(`/admin/user/add`, data),
+  delete: ids => request.delete(`/admin/user/delete`, { data: { ids } }),
 
+  resetPwd: (id, data) => request.patch(`/user/password/reset/${id}`, data),
   getAllRoles: () => request.get('/role?enable=1'),
 }

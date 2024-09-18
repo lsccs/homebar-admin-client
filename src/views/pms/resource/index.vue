@@ -45,7 +45,7 @@
               {{ currentMenu.layout || '跟随系统' }}
             </n-descriptions-item>
             <n-descriptions-item label="是否显示">
-              {{ currentMenu.show ? '是' : '否' }}
+              {{ currentMenu.can_show ? '是' : '否' }}
             </n-descriptions-item>
             <n-descriptions-item label="是否启用">
               {{ currentMenu.enable ? '是' : '否' }}
