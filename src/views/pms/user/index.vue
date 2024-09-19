@@ -67,6 +67,17 @@
         >
           <n-input v-model:value="modalForm.username" :disabled="modalAction !== 'add'" />
         </n-form-item>
+        <n-form-item v-if="['setRole'].includes(modalAction)" label="角色" path="roleIds">
+          <n-select
+            v-model:value="modalForm.roleIds"
+            :options="roles"
+            label-field="name"
+            value-field="id"
+            clearable
+            filterable
+            multiple
+          />
+        </n-form-item>
         <n-form-item
           v-if="['add', 'reset'].includes(modalAction)"
           :label="modalAction === 'reset' ? '重置密码' : '初始密码'"
@@ -80,19 +91,8 @@
           <n-input v-model:value="modalForm.password" />
         </n-form-item>
 
-        <n-form-item v-if="['add', 'setRole'].includes(modalAction)" label="角色" path="roleIds">
-          <n-select
-            v-model:value="modalForm.roleIds"
-            :options="roles"
-            label-field="name"
-            value-field="id"
-            clearable
-            filterable
-            multiple
-          />
-        </n-form-item>
         <n-form-item v-if="modalAction === 'add'" label="状态" path="enable">
-          <NSwitch v-model:value="modalForm.enable">
+          <NSwitch v-model:value="modalForm.enable" :checked-value="1" :unchecked-value="0">
             <template #checked>
               启用
             </template>
@@ -131,7 +131,7 @@ const genders = [
   { label: '女', value: 2 },
 ]
 const roles = ref([])
-api.getAllRoles().then(({ data = [] }) => (roles.value = data))
+api.getAllRoles().then(({ data }) => (roles.value = data.list))
 
 const {
   modalRef,
@@ -144,7 +144,7 @@ const {
   handleSave,
 } = useCrud({
   name: '用户',
-  initForm: { enable: true },
+  initForm: { enable: 1 },
   doCreate: api.create,
   doDelete: api.delete,
   doUpdate: api.update,
@@ -182,21 +182,6 @@ const columns = [
     },
   },
   {
-    title: '性别',
-    key: 'gender',
-    width: 80,
-    render: ({ gender }) => genders.find(item => gender === item.value)?.label ?? '',
-  },
-  { title: '邮箱', key: 'email', width: 150, ellipsis: { tooltip: true } },
-  {
-    title: '创建时间',
-    key: 'createDate',
-    width: 180,
-    render(row) {
-      return h('span', formatDateTime(row.createTime))
-    },
-  },
-  {
     title: '状态',
     key: 'enable',
     width: 120,
@@ -208,6 +193,8 @@ const columns = [
           rubberBand: false,
           value: row.enable,
           loading: !!row.enableLoading,
+          checkedValue: 1,
+          unCheckedValue: 0,
           onUpdateValue: () => handleEnable(row),
         },
         {
@@ -216,6 +203,19 @@ const columns = [
         },
       ),
   },
+  {
+    title: '性别',
+    key: 'gender',
+    width: 80,
+    render: ({ gender }) => genders.find(item => gender === item.value)?.label ?? '',
+  },
+  { title: '邮箱', key: 'email', width: 150, ellipsis: { tooltip: true } },
+  {
+    title: '创建时间',
+    key: 'create_time',
+    width: 180,
+  },
+
   {
     title: '操作',
     key: 'actions',
@@ -258,7 +258,7 @@ const columns = [
             size: 'small',
             type: 'error',
             style: 'margin-left: 12px;',
-            onClick: () => handleDelete(row.id),
+            onClick: () => handleDelete([row.id]),
           },
           {
             default: () => '删除',
@@ -273,7 +273,7 @@ const columns = [
 async function handleEnable(row) {
   row.enableLoading = true
   try {
-    await api.update({ id: row.id, enable: !row.enable })
+    await api.update({ id: row.id, enable: row.enable === 1 ? 0 : 1 })
     row.enableLoading = false
     $message.success('操作成功')
     $table.value?.handleSearch()
@@ -285,7 +285,7 @@ async function handleEnable(row) {
 }
 
 function handleOpenRolesSet(row) {
-  const roleIds = row.roles.map(item => item.id)
+  const roleIds = row.roles?.map(item => item.id) || []
   handleOpen({
     action: 'setRole',
     title: '分配角色',
@@ -297,13 +297,13 @@ function handleOpenRolesSet(row) {
 function onSave() {
   if (modalAction.value === 'setRole') {
     return handleSave({
-      api: () => api.update(modalForm.value),
+      api: () => api.relation_role({ user_id: modalForm.value.id, role_ids: modalForm.value.roleIds }),
       cb: () => $message.success('分配成功'),
     })
   }
   else if (modalAction.value === 'reset') {
     return handleSave({
-      api: () => api.resetPwd(modalForm.value.id, modalForm.value),
+      api: () => api.resetPwd(modalForm.value),
       cb: () => $message.success('密码重置成功'),
     })
   }

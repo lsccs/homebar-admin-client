@@ -14,7 +14,7 @@
           <n-avatar round :size="60" :src="userStore.avatar" class="flex-shrink-0" />
           <div class="ml-20 flex-col">
             <span class="text-20 opacity-80">
-              Hello, {{ userStore.nickName ?? userStore.username }}
+              Hello, {{ userStore.nick_name ?? userStore.username }}
             </span>
             <span class="mt-4 opacity-50">当前角色：{{ userStore.currentRole?.name }}</span>
           </div>

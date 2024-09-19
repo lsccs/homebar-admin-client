@@ -39,7 +39,7 @@
         bordered
       >
         <n-descriptions-item label="昵称">
-          {{ userStore.nickName }}
+          {{ userStore.nick_name }}
         </n-descriptions-item>
         <n-descriptions-item label="性别">
           {{ genders.find((item) => item.value === userStore.userInfo?.gender)?.label ?? '未知' }}
@@ -64,19 +64,19 @@
         label-placement="left"
         require-mark-placement="left"
       >
-        <n-form-item label="原密码" path="oldPassword" :rule="required">
-          <n-input v-model:value="pwdForm.oldPassword" type="password" placeholder="请输入原密码" />
+        <n-form-item label="原密码" path="old_password" :rule="required">
+          <n-input v-model:value="pwdForm.old_password" type="password" placeholder="请输入原密码" />
         </n-form-item>
-        <n-form-item label="新密码" path="newPassword" :rule="required">
-          <n-input v-model:value="pwdForm.newPassword" type="password" placeholder="请输入新密码" />
+        <n-form-item label="新密码" path="password" :rule="required">
+          <n-input v-model:value="pwdForm.password" type="password" placeholder="请输入新密码" />
         </n-form-item>
       </n-form>
     </MeModal>
 
     <MeModal ref="profileModalRef" title="修改资料" width="420px" @ok="handleProfileSave()">
       <n-form ref="profileFormRef" :model="profileForm" label-placement="left">
-        <n-form-item label="昵称" path="nickName">
-          <n-input v-model:value="profileForm.nickName" placeholder="请输入昵称" />
+        <n-form-item label="昵称" path="nick_name">
+          <n-input v-model:value="profileForm.nick_name" placeholder="请输入昵称" />
         </n-form-item>
         <n-form-item label="性别" path="gender">
           <n-select
@@ -140,7 +140,7 @@ const genders = [
 const [profileModalRef] = useModal()
 const [profileFormRef, profileForm, profileValidation] = useForm({
   id: userStore.userId,
-  nickName: userStore.nickName,
+  nick_name: userStore.nick_name,
   gender: userStore.userInfo?.gender ?? 0,
   address: userStore.userInfo?.address,
   email: userStore.userInfo?.email,

@@ -9,6 +9,6 @@
 import { request } from '@/utils'
 
 export default {
-  changePassword: data => request.post('/auth/password', data),
-  updateProfile: data => request.patch(`/user/profile/${data.id}`, data),
+  changePassword: data => request.put('/admin/profile/reset_pwd', data),
+  updateProfile: data => request.put(`/admin/profile/update`, data),
 }

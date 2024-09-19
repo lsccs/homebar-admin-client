@@ -6,16 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="943229ea-5348-4d00-a379-2f934a10e22c" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/me/crud/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/me/crud/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/store/modules/permission.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/modules/permission.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/http/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/http/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/pms/resource/components/ResAddOrEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pms/resource/components/ResAddOrEdit.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/pms/resource/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pms/resource/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layouts/components/UserAvatar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/components/UserAvatar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/helper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/modules/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/modules/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/base/index.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/base/keep-alive.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/base/test-modal.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/base/unocss-icon.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/base/unocss.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/home/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/home/index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/pms/user/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pms/user/api.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/pms/user/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/pms/user/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/profile/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/profile/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/profile/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/profile/index.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +92,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1726196666695</updated>
-      <workItem from="1726196668967" duration="46799000" />
+      <workItem from="1726196668967" duration="57649000" />
     </task>
     <servers />
   </component>

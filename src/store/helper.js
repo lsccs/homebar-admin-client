@@ -8,7 +8,7 @@ export async function getUserInfo() {
     id,
     username,
     avatar: profile?.avatar,
-    nickName: profile?.nick_name,
+    nick_name: profile?.nick_name,
     gender: profile?.gender,
     address: profile?.address,
     email: profile?.email,
