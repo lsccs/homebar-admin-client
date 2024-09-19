@@ -15,7 +15,7 @@
       :get-data="api.read"
     >
       <MeQueryItem label="角色名" :label-width="50">
-        <n-input v-model:value="queryItems.name" type="text" placeholder="请输入角色名" clearable />
+        <n-input v-model:value="queryItems._like_name" type="text" placeholder="请输入角色名" clearable />
       </MeQueryItem>
       <MeQueryItem label="状态" :label-width="50">
         <n-select
@@ -58,21 +58,21 @@
         >
           <n-input v-model:value="modalForm.code" :disabled="modalAction !== 'add'" />
         </n-form-item>
-        <n-form-item label="权限" path="permissionIds">
+        <n-form-item label="权限" path="permission_ids">
           <n-tree
             key-field="id"
             label-field="name"
             :selectable="false"
             :data="permissionTree"
-            :checked-keys="modalForm.permissionIds"
-            :on-update:checked-keys="(keys) => (modalForm.permissionIds = keys)"
+            :checked-keys="modalForm.permission_ids"
+            :on-update:checked-keys="(keys) => (modalForm.permission_ids = keys)"
 
             checkable check-on-click default-expand-all
             class="cus-scroll max-h-200 w-full"
           />
         </n-form-item>
         <n-form-item label="状态" path="enable">
-          <NSwitch v-model:value="modalForm.enable">
+          <NSwitch v-model:value="modalForm.enable" :checked-value="1" :unchecked-value="0">
             <template #checked>
               启用
             </template>
@@ -107,7 +107,7 @@ onMounted(() => {
 const { modalRef, modalFormRef, modalAction, modalForm, handleAdd, handleDelete, handleEdit }
   = useCrud({
     name: '角色',
-    doCreate: api.create,
+    doCreate: api.update,
     doDelete: api.delete,
     doUpdate: api.update,
     initForm: { enable: true },
@@ -128,7 +128,9 @@ const columns = [
           rubberBand: false,
           value: row.enable,
           loading: !!row.enableLoading,
-          disabled: row.code === 'SUPER_ADMIN',
+          checkedValue: 1,
+          unCheckedValue: 0,
+          disabled: row.code === 'ADMIN',
           onUpdateValue: () => handleEnable(row),
         },
         {
@@ -196,7 +198,7 @@ const columns = [
 async function handleEnable(row) {
   row.enableLoading = true
   try {
-    await api.update({ id: row.id, enable: !row.enable })
+    await api.update({ id: row.id, enable: row.enable === 1 ? 0 : 1 })
     row.enableLoading = false
     $message.success('操作成功')
     $table.value?.handleSearch()
