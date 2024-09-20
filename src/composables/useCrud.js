@@ -14,7 +14,7 @@ const ACTIONS = {
   add: '新增',
 }
 
-export function useCrud({ name, initForm = {}, doCreate, doDelete, doUpdate, refresh }) {
+export function useCrud({ name, initForm = {}, doCreate, doDelete, doUpdate, doDetail, refresh }) {
   const modalAction = ref('')
   const [modalRef, okLoading] = useModal()
   const [modalFormRef, modalForm, validation] = useForm(initForm)
@@ -39,6 +39,11 @@ export function useCrud({ name, initForm = {}, doCreate, doDelete, doUpdate, ref
     const { action, row, title, onOk } = options
     modalAction.value = action
     modalForm.value = { ...row }
+    if (action === 'edit' && doDetail) {
+      doDetail(row.id).then((res) => {
+        modalForm.value = { ...res.data }
+      })
+    }
     modalRef.value?.open({
       ...options,
       async onOk() {

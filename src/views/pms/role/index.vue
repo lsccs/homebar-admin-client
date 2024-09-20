@@ -110,6 +110,7 @@ const { modalRef, modalFormRef, modalAction, modalForm, handleAdd, handleDelete,
     doCreate: api.update,
     doDelete: api.delete,
     doUpdate: api.update,
+    doDetail: api.detail,
     initForm: { enable: true },
     refresh: (_, keepCurrentPage) => $table.value?.handleSearch(keepCurrentPage),
   })
@@ -142,25 +143,11 @@ const columns = [
   {
     title: '操作',
     key: 'actions',
-    width: 320,
+    width: 200,
     align: 'right',
     fixed: 'right',
     render(row) {
       return [
-        h(
-          NButton,
-          {
-            size: 'small',
-            type: 'primary',
-            secondary: true,
-            onClick: () =>
-              router.push({ path: `/pms/role/user/${row.id}`, query: { roleName: row.name } }),
-          },
-          {
-            default: () => '分配用户',
-            icon: () => h('i', { class: 'i-fe:user-plus text-14' }),
-          },
-        ),
         h(
           NButton,
           {
@@ -183,7 +170,7 @@ const columns = [
             type: 'error',
             style: 'margin-left: 12px;',
             disabled: row.code === 'SUPER_ADMIN',
-            onClick: () => handleDelete(row.id),
+            onClick: () => handleDelete([row.id]),
           },
           {
             default: () => '删除',

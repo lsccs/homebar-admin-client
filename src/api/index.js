@@ -18,7 +18,7 @@ export default {
   // 切换当前角色
   switchCurrentRole: role => request.post(`/auth/current-role/switch/${role}`),
   // 获取角色权限
-  getRolePermissions: () => request.get('/permission/tree'),
+  getRolePermissions: () => request.get('/admin/permission/tree'),
   // 验证菜单路径
-  validateMenuPath: path => request.get(`/permission/validate?path=${path}`),
+  validateMenuPath: path => request.get(`/admin/permission/validate?path=${path}`),
 }

@@ -16,9 +16,9 @@
       :model="modalForm"
     >
       <n-grid :cols="24" :x-gap="24">
-        <n-form-item-gi :span="12" label="所属菜单" path="parentId">
+        <n-form-item-gi :span="12" label="所属菜单" path="parent_id">
           <n-tree-select
-            v-model:value="modalForm.parentId"
+            v-model:value="modalForm.parent_id"
             :options="menuOptions"
             :disabled="parentIdDisabled"
             label-field="name"
@@ -94,11 +94,11 @@
           />
         </n-form-item-gi>
 
-        <n-form-item-gi v-if="modalForm.type === 'MENU'" :span="12" path="show">
+        <n-form-item-gi v-if="modalForm.type === 'MENU'" :span="12" path="can_show">
           <template #label>
             <QuestionLabel label="显示状态" content="控制是否在菜单栏显示，不影响路由注册" />
           </template>
-          <n-switch v-model:value="modalForm.can_show">
+          <n-switch v-model:value="modalForm.can_show" :checked-value="1" :unchecked-value="0">
             <template #checked>
               显示
             </template>
@@ -114,7 +114,7 @@
               content="如果是菜单，禁用后将不添加到路由表，无法进入此页面"
             />
           </template>
-          <n-switch v-model:value="modalForm.enable">
+          <n-switch v-model:value="modalForm.enable" :checked-value="1" :unchecked-value="0">
             <template #checked>
               启用
             </template>
@@ -123,14 +123,14 @@
             </template>
           </n-switch>
         </n-form-item-gi>
-        <n-form-item-gi v-if="modalForm.type === 'MENU'" :span="12" path="keepAlive">
+        <n-form-item-gi v-if="modalForm.type === 'MENU'" :span="12" path="keep_alive">
           <template #label>
             <QuestionLabel
               label="KeepAlive"
               content="设置keepAlive需将组件的name设置成当前菜单的code"
             />
           </template>
-          <n-switch v-model:value="modalForm.keepAlive">
+          <n-switch v-model:value="modalForm.keep_alive" :checked-value="1" :unchecked-value="0">
             <template #checked>
               是
             </template>
@@ -143,7 +143,7 @@
           v-if="modalForm.type === 'MENU'"
           :span="12"
           label="排序"
-          path="order"
+          path="sort_order"
           :rule="{
             type: 'number',
             required: true,
@@ -151,7 +151,7 @@
             trigger: ['blur', 'change'],
           }"
         >
-          <n-input-number v-model:value="modalForm.order" />
+          <n-input-number v-model:value="modalForm.sort_order" />
         </n-form-item-gi>
       </n-grid>
     </n-form>
@@ -196,7 +196,7 @@ const required = {
   trigger: ['blur', 'change'],
 }
 
-const defaultForm = { enable: true, show: true, layout: '' }
+const defaultForm = { enable: 1, can_show: 1, layout: '' }
 const [modalFormRef, modalForm, validation] = useForm()
 const [modalRef, okLoading] = useModal()
 
@@ -214,19 +214,20 @@ async function onSave() {
   await validation()
   okLoading.value = true
   try {
-    let newFormData
-    if (!modalForm.value.parentId)
-      modalForm.value.parentId = null
+    if (!modalForm.value.parent_id)
+      modalForm.value.parent_id = 0
     if (modalAction.value === 'add') {
-      const res = await api.addPermission(modalForm.value)
-      newFormData = res.data
+      await api.addPermission(modalForm.value)
+    }
+    if (modalAction.value === 'add-btn') {
+      await api.addBtnPermission(modalForm.value)
     }
     else if (modalAction.value === 'edit') {
-      await api.savePermission(modalForm.value.id, modalForm.value)
+      await api.savePermission(modalForm.value)
     }
     okLoading.value = false
     $message.success('保存成功')
-    emit('refresh', modalAction.value === 'add' ? newFormData : modalForm.value)
+    emit('refresh')
   }
   catch (error) {
     console.error(error)

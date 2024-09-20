@@ -20,7 +20,7 @@ export const usePermissionStore = defineStore('permission', {
     setPermissions(permissions) {
       this.permissions = permissions
       this.menus = this.permissions
-        .filter(item => item.type === 'MENU')
+        .filter(item => item.type === 'MENU' && item.can_show)
         .map(item => this.getMenuItem(item))
         .filter(item => !!item)
         .sort((a, b) => a.order - b.order)

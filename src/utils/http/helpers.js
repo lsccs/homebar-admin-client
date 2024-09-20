@@ -56,7 +56,7 @@ export function resolveResError(code, message, needTip = true) {
       message = '请求资源或接口不存在'
       break
     case 500:
-      message = '服务器发生异常'
+      message = message || '服务器发生异常'
       break
     default:
       message = message ?? `【${code}】: 未知异常!`

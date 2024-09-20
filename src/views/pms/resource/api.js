@@ -1,19 +1,12 @@
-/**********************************
- * @Author: Ronnie Zhang
- * @LastEditor: Ronnie Zhang
- * @LastEditTime: 2024/04/01 15:52:04
- * @Email: zclzone@outlook.com
- * Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
- **********************************/
-
 import { request } from '@/utils'
-import axios from 'axios'
 
 export default {
-  getMenuTree: () => request.get('/permission/menu/tree'),
-  getButtons: ({ parentId }) => request.get(`/permission/button/${parentId}`),
-  getComponents: () => axios.get(`${import.meta.env.VITE_PUBLIC_PATH}components.json`),
-  addPermission: data => request.post('/permission', data),
-  savePermission: (id, data) => request.patch(`/permission/${id}`, data),
-  deletePermission: id => request.delete(`permission/${id}`),
+  getMenuTree: () => request.get('/admin/permission/all_tree'),
+  getMenuDetail: id => request.get(`/admin/menu/detail_base?id=${id}`),
+  addPermission: data => request.post('/admin/menu/add', data),
+  addBtnPermission: data => request.post('/admin/menu/button_add', data),
+  deletePermission: ids => request.delete(`/admin/menu/delete`, { data: { ids } }),
+  savePermission: data => request.put(`/admin/menu/update`, data),
+
+  getButtons: data => request.post(`/admin/menu/button_list`, data),
 }

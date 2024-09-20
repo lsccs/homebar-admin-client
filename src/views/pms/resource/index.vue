@@ -3,7 +3,8 @@
     <div class="flex">
       <n-spin size="small" :show="treeLoading">
         <MenuTree
-          v-model:current-menu="currentMenu"
+          :current-menu="currentMenu"
+          @update:currentMenu="onSelectMenu"
           class="w-320 shrink-0"
           :tree-data="treeData"
           @refresh="initData"
@@ -12,69 +13,71 @@
 
       <div class="ml-40 w-0 flex-1">
         <template v-if="currentMenu">
-          <div class="flex justify-between">
-            <h3 class="mb-12">
-              {{ currentMenu.name }}
-            </h3>
-            <NButton size="small" type="primary" @click="handleEdit(currentMenu)">
-              <i class="i-material-symbols:edit-outline mr-4 text-14" />
-              编辑
-            </NButton>
-          </div>
-          <n-descriptions label-placement="left" bordered :column="2">
-            <n-descriptions-item label="编码">
-              {{ currentMenu.code }}
-            </n-descriptions-item>
-            <n-descriptions-item label="名称">
-              {{ currentMenu.name }}
-            </n-descriptions-item>
-            <n-descriptions-item label="路由地址">
-              {{ currentMenu.path ?? '--' }}
-            </n-descriptions-item>
-            <n-descriptions-item label="组件路径">
-              {{ currentMenu.component ?? '--' }}
-            </n-descriptions-item>
-            <n-descriptions-item label="菜单图标">
-              <span v-if="currentMenu.icon" class="flex items-center">
-                <i :class="`${currentMenu.icon}?mask text-22 mr-8`" />
-                <span class="opacity-50">{{ currentMenu.icon }}</span>
-              </span>
-              <span v-else>无</span>
-            </n-descriptions-item>
-            <n-descriptions-item label="layout">
-              {{ currentMenu.layout || '跟随系统' }}
-            </n-descriptions-item>
-            <n-descriptions-item label="是否显示">
-              {{ currentMenu.can_show ? '是' : '否' }}
-            </n-descriptions-item>
-            <n-descriptions-item label="是否启用">
-              {{ currentMenu.enable ? '是' : '否' }}
-            </n-descriptions-item>
-            <n-descriptions-item label="KeepAlive">
-              {{ currentMenu.keepAlive ? '是' : '否' }}
-            </n-descriptions-item>
-            <n-descriptions-item label="排序">
-              {{ currentMenu.order ?? '--' }}
-            </n-descriptions-item>
-          </n-descriptions>
+          <n-spin size="small" :show="detailLoading">
+            <div class="flex justify-between">
+              <h3 class="mb-12">
+                {{ currentMenu.name }}
+              </h3>
+              <NButton size="small" type="primary" @click="handleEdit(currentMenu)">
+                <i class="i-material-symbols:edit-outline mr-4 text-14" />
+                编辑
+              </NButton>
+            </div>
+            <n-descriptions label-placement="left" bordered :column="2">
+              <n-descriptions-item label="编码">
+                {{ currentMenu.code }}
+              </n-descriptions-item>
+              <n-descriptions-item label="名称">
+                {{ currentMenu.name }}
+              </n-descriptions-item>
+              <n-descriptions-item label="路由地址">
+                {{ currentMenu.path ?? '--' }}
+              </n-descriptions-item>
+              <n-descriptions-item label="组件路径">
+                {{ currentMenu.component ?? '--' }}
+              </n-descriptions-item>
+              <n-descriptions-item label="菜单图标">
+                <span v-if="currentMenu.icon" class="flex items-center">
+                  <i :class="`${currentMenu.icon}?mask text-22 mr-8`" />
+                  <span class="opacity-50">{{ currentMenu.icon }}</span>
+                </span>
+                <span v-else>无</span>
+              </n-descriptions-item>
+              <n-descriptions-item label="layout">
+                {{ currentMenu.layout || '跟随系统' }}
+              </n-descriptions-item>
+              <n-descriptions-item label="是否显示">
+                {{ currentMenu.can_show ? '是' : '否' }}
+              </n-descriptions-item>
+              <n-descriptions-item label="是否启用">
+                {{ currentMenu.enable ? '是' : '否' }}
+              </n-descriptions-item>
+              <n-descriptions-item label="Keep_alive">
+                {{ currentMenu.keep_alive ? '是' : '否' }}
+              </n-descriptions-item>
+              <n-descriptions-item label="排序">
+                {{ currentMenu.sort_order ?? '--' }}
+              </n-descriptions-item>
+            </n-descriptions>
 
-          <div class="mt-32 flex justify-between">
-            <h3 class="mb-12">
-              按钮
-            </h3>
-            <NButton size="small" type="primary" @click="handleAddBtn">
-              <i class="i-fe:plus mr-4 text-14" />
-              新增
-            </NButton>
-          </div>
+            <div class="mt-32 flex justify-between">
+              <h3 class="mb-12">
+                按钮
+              </h3>
+              <NButton size="small" type="primary" @click="handleAddBtn">
+                <i class="i-fe:plus mr-4 text-14" />
+                新增
+              </NButton>
+            </div>
 
-          <MeCrud
-            ref="$table"
-            :columns="btnsColumns"
-            :scroll-x="-1"
-            :get-data="api.getButtons"
-            :query-items="{ parentId: currentMenu.id }"
-          />
+            <MeCrud
+              ref="$table"
+              :columns="btnsColumns"
+              :scroll-x="-1"
+              :get-data="api.getButtons"
+              :query-items="{ parent_id: currentMenu.id }"
+            />
+          </n-spin>
         </template>
         <n-empty v-else class="h-450 f-c-c" size="large" description="请选择菜单查看详情" />
       </div>
@@ -92,20 +95,18 @@ import ResAddOrEdit from './components/ResAddOrEdit.vue'
 
 const treeData = ref([])
 const treeLoading = ref(false)
+const detailLoading = ref(false)
 const $table = ref(null)
 const currentMenu = ref(null)
-async function initData(data) {
-  if (data?.type === 'BUTTON') {
+async function initData() {
+  if ($table.value) {
     $table.value.handleSearch()
-    return
   }
+
   treeLoading.value = true
   const res = await api.getMenuTree()
   treeData.value = res?.data || []
   treeLoading.value = false
-
-  if (data)
-    currentMenu.value = data
 }
 initData()
 
@@ -133,6 +134,8 @@ const btnsColumns = [
           rubberBand: false,
           value: row.enable,
           loading: !!row.enableLoading,
+          checkedValue: 1,
+          unCheckedValue: 0,
           onUpdateValue: () => handleEnable(row),
         },
         {
@@ -190,11 +193,23 @@ watch(
   },
 )
 
+function onSelectMenu(node) {
+  if (!node) {
+    currentMenu.value = null
+    return
+  }
+  detailLoading.value = true
+  api.getMenuDetail(node.id).then((res) => {
+    detailLoading.value = false
+    currentMenu.value = res.data
+  })
+}
+
 function handleAddBtn() {
   modalRef.value?.handleOpen({
-    action: 'add',
+    action: 'add-btn',
     title: '新增按钮',
-    row: { type: 'BUTTON', parentId: currentMenu.value.id },
+    row: { type: 'BUTTON', parent_id: currentMenu.value.id },
     okText: '保存',
   })
 }

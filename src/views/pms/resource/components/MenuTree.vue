@@ -84,7 +84,7 @@ function renderSuffix({ option }) {
         type: 'primary',
         title: '新增下级菜单',
         size: 'tiny',
-        onClick: withModifiers(() => handleAdd({ parentId: option.id }), ['stop']),
+        onClick: withModifiers(() => handleAdd({ parent_id: option.id }), ['stop']),
       },
       { default: () => '新增' },
     ),
@@ -109,7 +109,7 @@ function handleDelete(item) {
     async confirm() {
       try {
         $message.loading('正在删除', { key: 'deleteMenu' })
-        await api.deletePermission(item.id)
+        await api.deletePermission([item.id])
         $message.success('删除成功', { key: 'deleteMenu' })
         emit('refresh')
         emit('update:currentMenu', null)
