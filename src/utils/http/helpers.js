@@ -51,6 +51,7 @@ export function resolveResError(code, message, needTip = true) {
       return false
     case 403:
       message = '请求被拒绝'
+      useAuthStore().logout()
       break
     case 404:
       message = '请求资源或接口不存在'

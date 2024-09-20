@@ -24,7 +24,7 @@
     >
       <MeQueryItem label="用户名" :label-width="50">
         <n-input
-          v-model:value="queryItems.username"
+          v-model:value="queryItems._like_username"
           type="text"
           placeholder="请输入用户名"
           clearable
@@ -207,9 +207,9 @@ const columns = [
     title: '性别',
     key: 'gender',
     width: 80,
-    render: ({ gender }) => genders.find(item => gender === item.value)?.label ?? '',
+    render: ({ profile }) => genders.find(item => profile.gender === item.value)?.label ?? '',
   },
-  { title: '邮箱', key: 'email', width: 150, ellipsis: { tooltip: true } },
+  { title: '邮箱', key: 'email', width: 150, ellipsis: { tooltip: true }, render: ({ profile }) => profile ? profile.email : '' },
   {
     title: '创建时间',
     key: 'create_time',
@@ -273,7 +273,7 @@ const columns = [
 async function handleEnable(row) {
   row.enableLoading = true
   try {
-    await api.update({ id: row.id, enable: row.enable === 1 ? 0 : 1 })
+    await api.updateEnable({ id: row.id, enable: row.enable === 1 ? 0 : 1 })
     row.enableLoading = false
     $message.success('操作成功')
     $table.value?.handleSearch()

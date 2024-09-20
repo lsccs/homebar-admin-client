@@ -4,9 +4,9 @@
       <n-spin size="small" :show="treeLoading">
         <MenuTree
           :current-menu="currentMenu"
-          @update:currentMenu="onSelectMenu"
           class="w-320 shrink-0"
           :tree-data="treeData"
+          @update:current-menu="onSelectMenu"
           @refresh="initData"
         />
       </n-spin>
@@ -89,6 +89,7 @@
 <script setup>
 import { MeCrud } from '@/components'
 import { NButton, NSwitch } from 'naive-ui'
+import { nextTick } from 'vue'
 import api from './api'
 import MenuTree from './components/MenuTree.vue'
 import ResAddOrEdit from './components/ResAddOrEdit.vue'
@@ -99,14 +100,11 @@ const detailLoading = ref(false)
 const $table = ref(null)
 const currentMenu = ref(null)
 async function initData() {
-  if ($table.value) {
-    $table.value.handleSearch()
-  }
-
   treeLoading.value = true
   const res = await api.getMenuTree()
   treeData.value = res?.data || []
   treeLoading.value = false
+  onSelectMenu(currentMenu.value)
 }
 initData()
 
@@ -172,7 +170,7 @@ const btnsColumns = [
             size: 'small',
             type: 'error',
             style: 'margin-left: 12px;',
-            onClick: () => handleDeleteBtn(row.id),
+            onClick: () => handleDeleteBtn([row.id]),
           },
           {
             default: () => '删除',
@@ -184,15 +182,6 @@ const btnsColumns = [
   },
 ]
 
-watch(
-  () => currentMenu.value,
-  async (v) => {
-    await nextTick()
-    if (v)
-      $table.value.handleSearch()
-  },
-)
-
 function onSelectMenu(node) {
   if (!node) {
     currentMenu.value = null
@@ -202,12 +191,17 @@ function onSelectMenu(node) {
   api.getMenuDetail(node.id).then((res) => {
     detailLoading.value = false
     currentMenu.value = res.data
+    nextTick(() => {
+      if ($table.value) {
+        $table.value.handleSearch()
+      }
+    })
   })
 }
 
 function handleAddBtn() {
   modalRef.value?.handleOpen({
-    action: 'add-btn',
+    action: 'add',
     title: '新增按钮',
     row: { type: 'BUTTON', parent_id: currentMenu.value.id },
     okText: '保存',
@@ -234,7 +228,7 @@ function handleDeleteBtn(id) {
         d.loading = true
         await api.deletePermission(id)
         $message.success('删除成功')
-        $table.value.handleSearch()
+        initData()
         d.loading = false
       }
       catch (error) {
@@ -248,8 +242,9 @@ function handleDeleteBtn(id) {
 async function handleEnable(item) {
   try {
     item.enableLoading = true
-    await api.savePermission(item.id, {
-      enable: !item.enable,
+    await api.lineEditBtnPermission({
+      id: item.id,
+      enable: item.enable === 1 ? 0 : 1,
     })
     $message.success('操作成功')
     $table.value?.handleSearch()

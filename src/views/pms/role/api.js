@@ -11,6 +11,7 @@ import { request } from '@/utils'
 export default {
   read: (params = {}) => request.post('/admin/role/list', params),
   update: data => request.post(`/admin/role/add_update`, data),
+  lineUpdate: data => request.put(`/admin/role/line_update`, data),
   delete: ids => request.delete(`/admin/role/delete`, { data: { ids } }),
   detail: id => request.get(`/admin/role/permission?id=${id}`),
 

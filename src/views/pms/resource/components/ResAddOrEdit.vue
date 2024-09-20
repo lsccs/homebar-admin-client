@@ -214,16 +214,16 @@ async function onSave() {
   await validation()
   okLoading.value = true
   try {
-    if (!modalForm.value.parent_id)
+    if (!modalForm.value.parent_id) {
       modalForm.value.parent_id = 0
+    }
+    const isButton = modalForm.value.type === 'BUTTON'
+
     if (modalAction.value === 'add') {
-      await api.addPermission(modalForm.value)
+      await (isButton ? api.addBtnPermission : api.addPermission)(modalForm.value)
     }
-    if (modalAction.value === 'add-btn') {
-      await api.addBtnPermission(modalForm.value)
-    }
-    else if (modalAction.value === 'edit') {
-      await api.savePermission(modalForm.value)
+    if (modalAction.value === 'edit') {
+      await (isButton ? api.editBtnPermission : api.savePermission)(modalForm.value)
     }
     okLoading.value = false
     $message.success('保存成功')
