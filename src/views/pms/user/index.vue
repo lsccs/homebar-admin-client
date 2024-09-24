@@ -207,7 +207,7 @@ const columns = [
     title: '性别',
     key: 'gender',
     width: 80,
-    render: ({ profile }) => genders.find(item => profile.gender === item.value)?.label ?? '',
+    render: ({ profile }) => genders.find(item => profile?.gender === item.value)?.label ?? '',
   },
   { title: '邮箱', key: 'email', width: 150, ellipsis: { tooltip: true }, render: ({ profile }) => profile ? profile.email : '' },
   {
