@@ -219,7 +219,7 @@ const columns = [
   {
     title: '操作',
     key: 'actions',
-    width: 320,
+    width: 150,
     align: 'right',
     fixed: 'right',
     hideInExcel: true,
@@ -234,7 +234,6 @@ const columns = [
             onClick: () => handleOpenRolesSet(row),
           },
           {
-            default: () => '分配角色',
             icon: () => h('i', { class: 'i-carbon:user-role text-14' }),
           },
         ),
@@ -247,7 +246,6 @@ const columns = [
             onClick: () => handleOpen({ action: 'reset', title: '重置密码', row, onOk: onSave }),
           },
           {
-            default: () => '重置密码',
             icon: () => h('i', { class: 'i-radix-icons:reset text-14' }),
           },
         ),
@@ -261,7 +259,6 @@ const columns = [
             onClick: () => handleDelete([row.id]),
           },
           {
-            default: () => '删除',
             icon: () => h('i', { class: 'i-material-symbols:delete-outline text-14' }),
           },
         ),
