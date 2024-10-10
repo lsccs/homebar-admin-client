@@ -42,7 +42,7 @@
           {{ userStore.nick_name }}
         </n-descriptions-item>
         <n-descriptions-item label="性别">
-          {{ genders.find((item) => item.value === userStore.userInfo?.gender)?.label ?? '未知' }}
+          {{ getDictMap('gender', userStore.userInfo?.gender) ?? '未知' }}
         </n-descriptions-item>
         <n-descriptions-item label="地址">
           {{ userStore.userInfo?.address }}
@@ -53,7 +53,7 @@
       </n-descriptions>
     </n-card>
 
-    <MeModal ref="avatarModalRef" width="420px" title="更改头像" @ok="handleAvatarSave()">
+    <MeModal ref="avatarModalRef" title="更改头像" @ok="handleAvatarSave()">
       <n-input v-model:value="newAvatar" />
     </MeModal>
 
@@ -73,7 +73,7 @@
       </n-form>
     </MeModal>
 
-    <MeModal ref="profileModalRef" title="修改资料" width="420px" @ok="handleProfileSave()">
+    <MeModal ref="profileModalRef" title="修改资料" @ok="handleProfileSave()">
       <n-form ref="profileFormRef" :model="profileForm" label-placement="left">
         <n-form-item label="昵称" path="nick_name">
           <n-input v-model:value="profileForm.nick_name" placeholder="请输入昵称" />
@@ -81,7 +81,7 @@
         <n-form-item label="性别" path="gender">
           <n-select
             v-model:value="profileForm.gender"
-            :options="genders"
+            v-options="'gender'"
             placeholder="请选择性别"
           />
         </n-form-item>
@@ -100,7 +100,7 @@
 import { MeModal } from '@/components'
 import { useForm, useModal } from '@/composables'
 import { useUserStore } from '@/store'
-import { getUserInfo } from '@/store/helper'
+import {getDictMap, getUserInfo} from '@/store/helper'
 import api from './api'
 
 const userStore = useUserStore()
@@ -132,11 +132,6 @@ async function handleAvatarSave() {
   refreshUserInfo()
 }
 
-const genders = [
-  { label: '保密', value: 0 },
-  { label: '男', value: 1 },
-  { label: '女', value: 2 },
-]
 const [profileModalRef] = useModal()
 const [profileFormRef, profileForm, profileValidation] = useForm({
   id: userStore.userId,

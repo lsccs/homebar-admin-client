@@ -7,6 +7,7 @@
  **********************************/
 
 import { router } from '@/router'
+import { options } from './options.js'
 
 const permission = {
   mounted(el, binding) {
@@ -20,4 +21,5 @@ const permission = {
 
 export function setupDirectives(app) {
   app.directive('permission', permission)
+  app.directive('options', options)
 }

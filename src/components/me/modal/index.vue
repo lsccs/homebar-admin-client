@@ -22,8 +22,9 @@
           {{ modalOptions.title }}
         </header>
       </template>
-      <slot />
-
+      <n-spin :show="loading">
+        <slot />
+      </n-spin>
       <!-- 底部按钮 -->
       <template #footer>
         <slot v-if="$slots.footer" name="footer" />
@@ -34,7 +35,7 @@
           <n-button
             v-if="modalOptions.showOk"
             type="primary"
-            :loading="modalOptions.okLoading"
+            :loading="loading || modalOptions.okLoading"
             class="ml-20"
             @click="handleOk()"
           >
@@ -48,7 +49,9 @@
 
 <script setup>
 import { initDrag } from './utils'
+import { useModal } from '@/composables/useModal'
 
+const [,,loading] = useModal()
 const props = defineProps({
   width: {
     type: String,

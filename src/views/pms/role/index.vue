@@ -28,7 +28,7 @@
         />
       </MeQueryItem>
     </MeCrud>
-    <MeModal ref="modalRef" width="520px">
+    <MeModal ref="modalRef">
       <n-form
         ref="modalFormRef"
         label-placement="left"

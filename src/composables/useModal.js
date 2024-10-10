@@ -5,6 +5,7 @@
  * @Email: zclzone@outlook.com
  * Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
  **********************************/
+const loading = ref(false)
 
 export function useModal() {
   const modalRef = ref(null)
@@ -16,5 +17,5 @@ export function useModal() {
       modalRef.value.okLoading = v
     },
   })
-  return [modalRef, okLoading]
+  return [modalRef, okLoading, loading]
 }

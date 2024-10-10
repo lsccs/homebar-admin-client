@@ -39,6 +39,7 @@
   </AppCard>
 
   <NDataTable
+    size="small"
     :remote="remote"
     :loading="loading"
     :scroll-x="scrollX"

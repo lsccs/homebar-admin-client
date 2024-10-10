@@ -1,9 +1,4 @@
-import antfu from '@antfu/eslint-config'
-
-export default antfu({
-  unocss: true,
-  formatters: true,
-  stylistic: true,
+export default {
   rules: {
     'n/prefer-global/process': 'off',
     'no-undef': 'off',
@@ -31,4 +26,4 @@ export default antfu({
       $modal: 'readonly',
     },
   },
-})
+}

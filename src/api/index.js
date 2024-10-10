@@ -21,4 +21,6 @@ export default {
   getRolePermissions: () => request.get('/admin/permission/tree'),
   // 验证菜单路径
   validateMenuPath: path => request.get(`/admin/permission/validate?path=${path}`),
+  // 获取枚举字典
+  getDictList: () => request.get(`/system/dict`),
 }

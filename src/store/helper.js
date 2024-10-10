@@ -1,5 +1,6 @@
 import api from '@/api'
 import { basePermissions } from '@/settings'
+import { lStorage } from '@/utils/index.js'
 
 export async function getUserInfo() {
   const res = await api.getUser()
@@ -27,4 +28,39 @@ export async function getPermissions() {
     console.error(error)
   }
   return basePermissions.concat(asyncPermissions)
+}
+
+// 获取字典列表，并存入缓存
+export function getDictList() {
+  api.getDictList().then((res) => {
+    const values = {}
+    Object.keys(res.data).forEach((key) => {
+      values[key] = res.data[key]
+    })
+    lStorage.set('dict', values)
+  })
+}
+
+// 或者字典value映射
+export function getDictMap(key, value) {
+  const dict = lStorage.get('dict')
+  const current = dict[key]
+
+  if (!current) {
+    return null
+  }
+  const map = current.reduce((acc, item) => {
+    acc[item.value] = item
+    return acc
+  }, {})
+
+  return map[value].label
+}
+// 获取下拉数据
+export function getDictOptions(key) {
+  const dict = lStorage.get('dict')
+  if (!dict) {
+    return []
+  }
+  return dict[key] || []
 }

@@ -7,7 +7,7 @@
  --------------------------------->
 
 <template>
-  <MeModal ref="modalRef" title="请选择角色" width="360px" class="p-12">
+  <MeModal ref="modalRef" title="请选择角色" class="p-12">
     <n-radio-group v-model:value="roleCode" class="cus-scroll-y max-h-420 w-full py-16">
       <n-space vertical :size="24" class="mx-12">
         <n-radio-button

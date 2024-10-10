@@ -16,7 +16,7 @@ const ACTIONS = {
 
 export function useCrud({ name, initForm = {}, doCreate, doDelete, doUpdate, doDetail, refresh }) {
   const modalAction = ref('')
-  const [modalRef, okLoading] = useModal()
+  const [modalRef, okLoading, loading] = useModal()
   const [modalFormRef, modalForm, validation] = useForm(initForm)
 
   /** 新增 */
@@ -38,11 +38,15 @@ export function useCrud({ name, initForm = {}, doCreate, doDelete, doUpdate, doD
   function handleOpen(options = {}) {
     const { action, row, title, onOk } = options
     modalAction.value = action
-    modalForm.value = { ...row }
     if (action === 'edit' && doDetail) {
+      loading.value = true
       doDetail(row.id).then((res) => {
         modalForm.value = { ...res.data }
+        loading.value = false
       })
+    }
+    else {
+      modalForm.value = { ...row }
     }
     modalRef.value?.open({
       ...options,
@@ -66,11 +70,11 @@ export function useCrud({ name, initForm = {}, doCreate, doDelete, doUpdate, doD
     await validation()
     const actions = {
       add: {
-        api: () => doCreate(modalForm.value),
+        api: () => doCreate({ ...modalForm.value }),
         cb: () => $message.success('新增成功'),
       },
       edit: {
-        api: () => doUpdate(modalForm.value),
+        api: () => doUpdate({ ...modalForm.value }),
         cb: () => $message.success('保存成功'),
       },
     }
