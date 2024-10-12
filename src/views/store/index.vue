@@ -99,14 +99,12 @@
           <n-input-number v-model:value="modalForm.lo" :precision="4" />
         </n-form-item>
         <n-form-item label="用户" path="user_ids">
-          <n-select
+          <Select
             v-model:value="modalForm.user_ids"
-            :options="userList"
-            label-field="nickname"
-            value-field="id"
-            clearable
-            filterable
+            :load-api="userListApi"
             multiple
+            label-field="nickname"
+            search-field="profile._like_nick_name"
           />
         </n-form-item>
 
@@ -131,6 +129,7 @@ import { useCrud } from '@/composables'
 import { NAvatar, NButton, NSwitch } from 'naive-ui'
 import userApi from '../pms/user/api'
 import api from './api'
+import Select from "@/components/select/index.vue";
 
 defineOptions({ name: 'UserMgt' })
 
@@ -142,14 +141,17 @@ onMounted(() => {
   $table.value?.handleSearch()
 })
 
-const userList = ref([])
-
-userApi.read({ page: 1, filters: { enable: 1 } }).then(({ data }) => {
-  userList.value = data.list.map((item) => {
-    item.nickname = item.profile?.nick_name || item.username
-    return item
+// 获取用户列表
+function userListApi(data) {
+  data.filters.enable = 1
+  return userApi.read(data).then((res) => {
+    res.data.list = res.data.list.map((item) => {
+      item.nickname = item.profile?.nick_name || item.username
+      return item
+    })
+    return res
   })
-})
+}
 
 const {
   modalRef,
@@ -224,7 +226,6 @@ const columns = [
           {
             size: 'small',
             type: 'primary',
-            disabled: row.code === 'SUPER_ADMIN',
             onClick: () => handleEdit(row),
           },
           {

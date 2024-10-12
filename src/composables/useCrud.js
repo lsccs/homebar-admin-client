@@ -38,7 +38,7 @@ export function useCrud({ name, initForm = {}, doCreate, doDelete, doUpdate, doD
   function handleOpen(options = {}) {
     const { action, row, title, onOk } = options
     modalAction.value = action
-    if (action === 'edit' && doDetail) {
+    if ((action === 'edit' || action === 'view') && doDetail) {
       loading.value = true
       doDetail(row.id).then((res) => {
         modalForm.value = { ...res.data }

@@ -11,7 +11,7 @@ import { request } from '@/utils'
 export default {
   create: data => request.post('/m/web/store/add', data),
   read: (data = {}) => request.post('/m/web/store/list', data),
-  detail: id => request.get(`/m/web/store/detail_base?id=${id}`),
+  detail: id => request.get(`/m/web/store/detail?id=${id}`),
   update: data => request.put(`/m/web/store/update`, data),
   updateEnable: data => request.put(`/m/web/store/line_update`, data),
   delete: ids => request.delete(`/m/web/store/delete`, { data: { ids } }),

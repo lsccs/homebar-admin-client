@@ -12,5 +12,4 @@ export default {
   toggleRole: data => request.post('/auth/role/toggle', data),
   getCapthcha: () => request.get('/system/capthcha'),
   login: data => request.post('/system/login', data, { needToken: false }),
-  getUser: () => request.get('/user/detail'),
 }

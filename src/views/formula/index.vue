@@ -3,7 +3,7 @@
     <template #action>
       <NButton type="primary" @click="handleAdd()">
         <i class="i-material-symbols:add mr-4 text-18" />
-        创建原料
+        创建配方
       </NButton>
     </template>
 
@@ -14,9 +14,17 @@
       :columns="columns"
       :get-data="api.read"
     >
-      <MeQueryItem label="原料名称" :label-width="80">
+      <MeQueryItem label="配方名称" :label-width="80">
         <n-input
           v-model:value="queryItems._like_name"
+          type="text"
+          placeholder="请输入配方名称"
+          clearable
+        />
+      </MeQueryItem>
+      <MeQueryItem label="原料" :label-width="80">
+        <n-input
+          v-model:value="queryItems[`formula_raw_material.raw_material._like_name`]"
           type="text"
           placeholder="请输入原料名称"
           clearable
@@ -34,57 +42,34 @@
         :disabled="modalAction === 'view'"
       >
         <n-form-item
-          label="原料名称"
+          label="配方名称"
           path="name"
           :rule="{
             required: true,
-            message: '请输入原料名称',
+            message: '请输入配方名称',
             trigger: ['input', 'blur'],
           }"
         >
           <n-input v-model:value="modalForm.name" />
         </n-form-item>
-        <n-form-item
-          label="单价"
-          path="amount"
-          :rule="{
-            type: 'number',
+        <n-form-item label="原料" path="formula_raw_materials" :rule="{
+          type: 'array',
             required: true,
-            message: '请输入单价',
+            message: '请选择原料',
             trigger: ['input', 'blur'],
-          }"
-        >
-          <n-input-number v-model:value="modalForm.amount" :precision="4" />
+          }">
+
+
+          <EditTable v-model:value="modalForm.formula_raw_materials" :columns="formulaColumns" :defaultRow="defaultRow" />
         </n-form-item>
 
         <n-form-item
-          label="库存"
-          path="number"
-          :rule="{
-            type: 'array',
-            required: true,
-            message: '请输入库存',
-            trigger: ['input', 'blur'],
-          }"
+          label="描述"
+          path="remark"
         >
-          <InputSelect
-            type="number"
-            v-model:value="modalForm.number"
-            v-options="'unit'"
-          />
+          <n-input type="textarea" v-model:value="modalForm.remark" />
         </n-form-item>
 
-        <n-form-item
-          label="最低库存"
-          path="min_number"
-        >
-          <InputSelect
-            type="number"
-            v-model:value="modalForm.min_number"
-            v-options="'unit'"
-            :max="modalForm.number?.[0]"
-          />
-        </n-form-item>
       </n-form>
     </MeModal>
   </CommonPage>
@@ -92,11 +77,14 @@
 
 <script setup>
 import { MeCrud, MeModal, MeQueryItem } from '@/components'
-import InputSelect from '@/components/inputSelect/index.vue'
+import EditTable from '@/components/editTable/index.vue'
 import { useCrud } from '@/composables'
 import { NButton } from 'naive-ui'
 import api from './api'
-import { getDictMap } from '@/store/helper'
+import rawApi from '../raw_material/api'
+import {getDictMap, getDictOptions} from "@/store/helper.js";
+import {router} from "@/router/index.js";
+import formulaColumns from './formulaColumns.js'
 
 defineOptions({ name: 'UserMgt' })
 
@@ -116,26 +104,30 @@ const {
   handleAdd,
   handleDelete,
   handleEdit,
+  handleView
 } = useCrud({
-  name: '原料',
+  name: '配方',
   initForm: {},
-  doCreate: data => submitFilter(data, api.create),
+  doCreate: api.create,
   doDelete: api.delete,
-  doUpdate: data => submitFilter(data, api.update),
-  doDetail,
+  doUpdate: api.update,
+  doDetail: api.detail,
   refresh: () => $table.value?.handleSearch(),
 })
 
 const columns = [
-  { title: '原料名称', key: 'name', width: 150, ellipsis: { tooltip: true } },
-  { title: '单价', key: 'amount', width: 100 },
-  { title: '库存', key: 'number', width: 100, render(row) {
-    return h('span', `${row.number}/${getDictMap('unit', row.unit)}`)
-  } },
-  { title: '最低库存', key: 'min_number', width: 100, render(row) {
-    return h('span', `${row.min_number || 0}/${getDictMap('unit', row.min_unit)}`)
-  } },
+  { title: '配方名称', key: 'name', width: 100, ellipsis: { tooltip: true } },
+  {
+    title: '原料',
+    key: 'formula_raw_materials',
+    width: 150,
+    render(row) {
+      const value = row.formula_raw_materials.map(item => `${item.raw_material.name}(${item.number}/${getDictMap('unit', item.unit)})`) || [];
 
+      return h("span", value.join('；'))
+    }
+  },
+  { title: '描述', key: 'remark', width: 150, ellipsis: { tooltip: true }},
   {
     title: '创建时间',
     key: 'create_time',
@@ -145,7 +137,7 @@ const columns = [
   {
     title: '操作',
     key: 'actions',
-    width: 80,
+    width: 100,
     align: 'center',
     fixed: 'right',
     hideInExcel: true,
@@ -155,6 +147,17 @@ const columns = [
           NButton,
           {
             size: 'small',
+            onClick: () => router.push("/formula/detail?id=" + row.id),
+          },
+          {
+            icon: () => h('i', { class: 'i-material-symbols:info text-14' }),
+          },
+        ),
+        h(
+          NButton,
+          {
+            size: 'small',
+            style: 'margin-left: 12px;',
             type: 'primary',
             onClick: () => handleEdit(row),
           },
@@ -179,23 +182,7 @@ const columns = [
   },
 ]
 
-function submitFilter(data, api) {
-  const [min_number = 0, min_unit] = data.min_number || []
-  data.min_number = min_number
-  data.min_unit = min_unit
+const unitOptions = getDictOptions('unit')
 
-  const [number = 0, unit] = data.number || []
-  data.number = number
-  data.unit = unit
-  return api(data)
-}
-
-function doDetail(data) {
-  return api.detail(data).then((res) => {
-    const data = res.data
-    data.min_number = [data.min_number, data.min_unit]
-    data.number = [data.number, data.unit]
-    return res
-  })
-}
+const defaultRow = { unit: unitOptions[0].value };
 </script>

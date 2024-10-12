@@ -32,7 +32,7 @@
       </MeQueryItem>
 
       <MeQueryItem label="性别" :label-width="50">
-        <n-select v-model:value="queryItems.gender" clearable :options="genders" />
+        <n-select v-model:value="queryItems[`profile.gender`]" clearable v-options="'gender'" />
       </MeQueryItem>
 
       <MeQueryItem label="状态" :label-width="50">

@@ -54,7 +54,7 @@ export function getDictMap(key, value) {
     return acc
   }, {})
 
-  return map[value].label
+  return map[value]?.label || ''
 }
 // 获取下拉数据
 export function getDictOptions(key) {

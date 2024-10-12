@@ -3,7 +3,7 @@
     <template #action>
       <NButton type="primary" @click="handleAdd()">
         <i class="i-material-symbols:add mr-4 text-18" />
-        创建原料
+        商品分类
       </NButton>
     </template>
 
@@ -14,11 +14,11 @@
       :columns="columns"
       :get-data="api.read"
     >
-      <MeQueryItem label="原料名称" :label-width="80">
+      <MeQueryItem label="分类名称" :label-width="80">
         <n-input
           v-model:value="queryItems._like_name"
           type="text"
-          placeholder="请输入原料名称"
+          placeholder="请输入分类名称"
           clearable
         />
       </MeQueryItem>
@@ -34,56 +34,27 @@
         :disabled="modalAction === 'view'"
       >
         <n-form-item
-          label="原料名称"
+          label="分类名称"
           path="name"
           :rule="{
             required: true,
-            message: '请输入原料名称',
+            message: '请输入分类名称',
             trigger: ['input', 'blur'],
           }"
         >
           <n-input v-model:value="modalForm.name" />
         </n-form-item>
         <n-form-item
-          label="单价"
-          path="amount"
+          label="免费次数"
+          path="limit_number"
           :rule="{
             type: 'number',
             required: true,
-            message: '请输入单价',
+            message: '请输入免费次数',
             trigger: ['input', 'blur'],
           }"
         >
-          <n-input-number v-model:value="modalForm.amount" :precision="4" />
-        </n-form-item>
-
-        <n-form-item
-          label="库存"
-          path="number"
-          :rule="{
-            type: 'array',
-            required: true,
-            message: '请输入库存',
-            trigger: ['input', 'blur'],
-          }"
-        >
-          <InputSelect
-            type="number"
-            v-model:value="modalForm.number"
-            v-options="'unit'"
-          />
-        </n-form-item>
-
-        <n-form-item
-          label="最低库存"
-          path="min_number"
-        >
-          <InputSelect
-            type="number"
-            v-model:value="modalForm.min_number"
-            v-options="'unit'"
-            :max="modalForm.number?.[0]"
-          />
+          <n-input-number :min="0"v-model:value="modalForm.limit_number" />
         </n-form-item>
       </n-form>
     </MeModal>
@@ -117,24 +88,18 @@ const {
   handleDelete,
   handleEdit,
 } = useCrud({
-  name: '原料',
-  initForm: {},
-  doCreate: data => submitFilter(data, api.create),
+  name: '商品分类',
+  initForm: { limit_number: 0 },
+  doCreate: api.create,
   doDelete: api.delete,
-  doUpdate: data => submitFilter(data, api.update),
-  doDetail,
+  doUpdate: api.update,
+  doDetail: api.detail,
   refresh: () => $table.value?.handleSearch(),
 })
 
 const columns = [
-  { title: '原料名称', key: 'name', width: 150, ellipsis: { tooltip: true } },
-  { title: '单价', key: 'amount', width: 100 },
-  { title: '库存', key: 'number', width: 100, render(row) {
-    return h('span', `${row.number}/${getDictMap('unit', row.unit)}`)
-  } },
-  { title: '最低库存', key: 'min_number', width: 100, render(row) {
-    return h('span', `${row.min_number || 0}/${getDictMap('unit', row.min_unit)}`)
-  } },
+  { title: '分类名称', key: 'name', width: 150, ellipsis: { tooltip: true } },
+  { title: '免费次数', key: 'limit_number', width: 100 },
 
   {
     title: '创建时间',
@@ -179,23 +144,4 @@ const columns = [
   },
 ]
 
-function submitFilter(data, api) {
-  const [min_number = 0, min_unit] = data.min_number || []
-  data.min_number = min_number
-  data.min_unit = min_unit
-
-  const [number = 0, unit] = data.number || []
-  data.number = number
-  data.unit = unit
-  return api(data)
-}
-
-function doDetail(data) {
-  return api.detail(data).then((res) => {
-    const data = res.data
-    data.min_number = [data.min_number, data.min_unit]
-    data.number = [data.number, data.unit]
-    return res
-  })
-}
 </script>

@@ -2,7 +2,7 @@ import { request } from '@/utils'
 
 export default {
   getMenuTree: () => request.get('/admin/permission/all_tree'),
-  getMenuDetail: id => request.get(`/admin/menu/detail_base?id=${id}`),
+  getMenuDetail: id => request.get(`/admin/menu/detail?id=${id}`),
   addPermission: data => request.post('/admin/menu/add', data),
   addBtnPermission: data => request.post('/admin/menu/button_add', data),
   lineEditBtnPermission: data => request.put('/admin/menu/line_update', data),

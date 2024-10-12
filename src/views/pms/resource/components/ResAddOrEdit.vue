@@ -85,13 +85,7 @@
               content="前端组件的路径，以 /src 开头，父级菜单可不填"
             />
           </template>
-          <n-select
-            v-model:value="modalForm.component"
-            :options="componentOptions"
-            clearable
-            filterable
-            tag
-          />
+          <n-input v-model:value="modalForm.component"></n-input>
         </n-form-item-gi>
 
         <n-form-item-gi v-if="modalForm.type === 'MENU'" :span="12" path="can_show">
