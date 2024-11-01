@@ -51,7 +51,7 @@
           :rule="{
             type: 'number',
             required: true,
-            message: '请输入封面',
+            message: '请选择封面',
             trigger: ['input', 'blur'],
           }"
         >
