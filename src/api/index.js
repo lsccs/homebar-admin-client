@@ -16,7 +16,7 @@ export default {
   // 登出
   logout: () => request.post('/auth/logout', {}, { needTip: false }),
   // 切换当前角色
-  switchCurrentRole: role => request.post(`/auth/current-role/switch/${role}`),
+  switchCurrentRole: role => request.put(`/admin/user/switch_role`, { role_id: role }),
   // 获取角色权限
   getRolePermissions: () => request.get('/admin/permission/tree'),
   // 验证菜单路径

@@ -2,7 +2,7 @@
   <AppPage show-footer>
     <n-card>
       <n-space align="center">
-        <n-avatar round :size="100" :src="userStore.avatar" />
+        <Avatar isEdit :value="userStore.avatar" @change="handleAvatarSave" />
         <div class="ml-20">
           <div class="flex items-center text-16">
             <span>用户名:</span>
@@ -11,14 +11,6 @@
               <i class="i-fe:edit mr-4" />
               修改密码
             </n-button>
-          </div>
-          <div class="mt-16 flex items-center">
-            <n-button type="primary" ghost @click="avatarModalRef.open()">
-              更改头像
-            </n-button>
-            <span class="ml-12 opacity-60">
-              修改头像只支持在线链接，不提供上传图片功能，如有需要可自行对接！
-            </span>
           </div>
         </div>
       </n-space>
@@ -53,9 +45,6 @@
       </n-descriptions>
     </n-card>
 
-    <MeModal ref="avatarModalRef" title="更改头像" @ok="handleAvatarSave()">
-      <n-input v-model:value="newAvatar" />
-    </MeModal>
 
     <MeModal ref="pwdModalRef" title="修改密码" width="420px" @ok="handlePwdSave()">
       <n-form
@@ -102,6 +91,7 @@ import { useForm, useModal } from '@/composables'
 import { useUserStore } from '@/store'
 import {getDictMap, getUserInfo} from '@/store/helper'
 import api from './api'
+import Avatar from '@/components/avatar/index.vue'
 
 const userStore = useUserStore()
 const required = {
@@ -122,14 +112,13 @@ async function handlePwdSave() {
 
 const newAvatar = ref(userStore.avatar)
 const [avatarModalRef] = useModal()
-async function handleAvatarSave() {
-  if (!newAvatar.value) {
-    $message.error('请输入头像地址')
+async function handleAvatarSave(id) {
+  if (!id) {
+    $message.error('请选择头像')
     return false
   }
-  await api.updateProfile({ id: userStore.userId, avatar: newAvatar.value })
-  $message.success('头像修改成功')
-  refreshUserInfo()
+  profileForm.value.avatar = id;
+  handleProfileSave();
 }
 
 const [profileModalRef] = useModal()
@@ -143,7 +132,7 @@ const [profileFormRef, profileForm, profileValidation] = useForm({
 async function handleProfileSave() {
   await profileValidation()
   await api.updateProfile(profileForm.value)
-  $message.success('资料修改成功')
+  $message.success('修改成功')
   refreshUserInfo()
 }
 

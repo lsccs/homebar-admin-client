@@ -22,16 +22,11 @@ export const useAuthStore = defineStore('auth', {
       this.resetLoginState()
     },
     resetLoginState() {
+      const { router } = useRouterStore()
       const { resetUser } = useUserStore()
-      const { resetRouter } = useRouterStore()
-      const { resetPermission, accessRoutes } = usePermissionStore()
       const { resetTabs } = useTabStore()
-      // 重置路由
-      resetRouter(accessRoutes)
       // 重置用户
       resetUser()
-      // 重置权限
-      resetPermission()
       // 重置Tabs
       resetTabs()
     },

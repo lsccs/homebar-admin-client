@@ -56,12 +56,13 @@
           label="店铺封面"
           path="cover"
           :rule="{
+            type: 'number',
             required: true,
             message: '请输入店铺封面',
             trigger: ['input', 'blur'],
           }"
         >
-          <n-input v-model:value="modalForm.cover" />
+          <FileSelector :multiple="false" v-model:value="modalForm.cover" />
         </n-form-item>
         <n-form-item
           label="店铺地址"
@@ -130,6 +131,7 @@ import { NAvatar, NButton, NSwitch } from 'naive-ui'
 import userApi from '../pms/user/api'
 import api from './api'
 import Select from "@/components/select/index.vue";
+import FileSelector from "@/components/fileSelector/index.vue";
 
 defineOptions({ name: 'UserMgt' })
 
@@ -144,7 +146,7 @@ onMounted(() => {
 // 获取用户列表
 function userListApi(data) {
   data.filters.enable = 1
-  return userApi.read(data).then((res) => {
+  return userApi.getUserList(data).then((res) => {
     res.data.list = res.data.list.map((item) => {
       item.nickname = item.profile?.nick_name || item.username
       return item

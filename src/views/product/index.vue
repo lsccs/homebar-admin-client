@@ -49,18 +49,19 @@
           label="封面"
           path="cover"
           :rule="{
+            type: 'number',
             required: true,
             message: '请输入封面',
             trigger: ['input', 'blur'],
           }"
         >
-          <Upload />
-<!--          <n-input v-model:value="modalForm.cover" />-->
+          <FileSelector :multiple="false" v-model:value="modalForm.cover" />
         </n-form-item>
         <n-form-item
           label="商品分类"
           path="type_id"
           :rule="{
+            type: 'number',
             required: true,
             message: '请选择商品分类',
             trigger: ['input', 'blur'],
@@ -75,6 +76,7 @@
           label="配方"
           path="formula_id"
           :rule="{
+            type: 'number',
             required: true,
             message: '请选择配方',
             trigger: ['input', 'blur'],
@@ -142,7 +144,7 @@ import api from './api'
 import Select from "@/components/select/index.vue";
 import typeApi from '../product_type/api'
 import formulaApi from '../formula/api'
-import Upload from '@/components/upload/index.vue'
+import FileSelector from '@/components/fileSelector/index.vue'
 
 defineOptions({ name: 'UserMgt' })
 
@@ -219,4 +221,8 @@ const columns = [
   },
 ]
 
+
+function handleSelectFile() {
+
+}
 </script>

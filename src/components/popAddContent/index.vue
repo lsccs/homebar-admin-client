@@ -1,12 +1,14 @@
 <template>
   <n-popover
+    ref="popover"
     trigger="click"
     @positive-click="onSubmit"
     @negative-click="onCancel"
   >
 
     <template #trigger>
-      <n-button>{{ title }}</n-button>
+      <n-button v-if="!link" size="small">{{ title }}</n-button>
+      <a v-else>{{ title }}</a>
     </template>
     <div class="pop-action">
       <n-input
@@ -43,18 +45,24 @@ export default {
       type: String,
       default: ''
     },
+    link: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     return {
       input: '',
-      visible: false,
       loading: false,
     }
+  },
+  mounted() {
+    this.input = this.defaultValue
   },
   methods: {
     onCancel() {
       this.input = ''
-      this.visible = false
+      this.$refs.popover.setShow(false)
       this.loading = false
     },
     onSubmit() {

@@ -1,17 +1,17 @@
 <template>
-  <div class="file-item" @click="handleClick">
-    <div class="file-content">
+  <div class="file-item">
+    <div class="file-content" @click="handleClick">
       <div v-if="type === 'image'" class="image" :class="{ active }">
-        <img :src="path" />
+        <img :src="url" />
         <div class="mask">
-          <i class="el-icon-check icon"></i>
+          <i :class="`i-fe:check bg-primary text-24`" />
         </div>
 
       </div>
       <div v-if="type === 'video'" class="video" :class="{ active }">
-        <video ref="video" :src="path" />
+        <video ref="video" :src="url" />
         <div class="mask">
-          <i class="el-icon-check icon"></i>
+          <i :class="`i-fe:check`" />
         </div>
       </div>
     </div>
@@ -22,12 +22,11 @@
 
           <PopAddContent
             v-if="!select"
-            title="新增分组"
+            title="重命名"
             :defaultValue="file_name"
             @submit="handleRename"
-          >
-            <div @click.stop class="rename">重命名</div>
-          </PopAddContent>
+            link
+          />
 
           <div @click="handlePreview">查看</div>
         </div>
@@ -38,7 +37,8 @@
 
 <script>
 import PopAddContent from '@/components/popAddContent/index.vue'
-import { fileUpdate } from '@/api/file'
+import API from '@/api/file'
+
 
 export default {
   components: { PopAddContent },
@@ -47,7 +47,7 @@ export default {
       type: Number,
       default: 0,
     },
-    path: {
+    url: {
       type: String,
       default: '',
     },
@@ -96,16 +96,13 @@ export default {
   },
   methods: {
     handleClick() {
-      this.$emit('click')
+      this.$emit('select')
     },
 
     handleRename(value, done) {
-      fileUpdate({ id: this.id, file_name: value })
+      API.fileUpdate({ id: this.id, file_name: value })
         .then((res) => {
-          this.$message({
-            message: res.message,
-            type: 'success',
-          })
+          $message.success(res.message)
         })
         .finally(() => {
           setTimeout(() => {
@@ -182,6 +179,7 @@ export default {
       align-items: center;
       text-align: center;
       line-height: 13px;
+      column-gap: 8px;
 
       .rename {
         margin-right: 8px;
@@ -215,7 +213,7 @@ export default {
           display: flex;
           justify-content: center;
           align-items: center;
-          background-color: #00000080;
+          background-color: rgba(255, 255, 255, 0.6);
           position: absolute;
           top: 0;
           left: 0;

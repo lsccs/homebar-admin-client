@@ -4,7 +4,7 @@ import { lStorage } from '@/utils/index.js'
 
 export async function getUserInfo() {
   const res = await api.getUser()
-  const { id, username, profile, roles, currentRole } = res.data || {}
+  const { id, username, profile, roles, current_role_id } = res.data || {}
   return {
     id,
     username,
@@ -14,7 +14,7 @@ export async function getUserInfo() {
     address: profile?.address,
     email: profile?.email,
     roles,
-    currentRole,
+    currentRole: roles.find(item => item.id === current_role_id),
   }
 }
 

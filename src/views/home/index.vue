@@ -1,17 +1,9 @@
-<!--------------------------------
- - @Author: Ronnie Zhang
- - @LastEditor: Ronnie Zhang
- - @LastEditTime: 2023/12/05 21:28:22
- - @Email: zclzone@outlook.com
- - Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
- --------------------------------->
-
 <template>
   <AppPage show-footer>
     <div class="flex">
       <n-card class="min-w-200 w-30%">
         <div class="flex items-center">
-          <n-avatar round :size="60" :src="userStore.avatar" class="flex-shrink-0" />
+          <Avatar :value="userStore.avatar" class="flex-shrink-0" />
           <div class="ml-20 flex-col">
             <span class="text-20 opacity-80">
               Hello, {{ userStore.nick_name ?? userStore.username }}
@@ -158,6 +150,7 @@ import * as echarts from 'echarts/core'
 import { UniversalTransition } from 'echarts/features'
 import { CanvasRenderer } from 'echarts/renderers'
 import VChart from 'vue-echarts'
+import Avatar from '@/components/avatar/index.vue'
 
 const userStore = useUserStore()
 

@@ -111,7 +111,7 @@ const { modalRef, modalFormRef, modalAction, modalForm, handleAdd, handleDelete,
     doDelete: api.delete,
     doUpdate: api.update,
     doDetail: api.detail,
-    initForm: { enable: true },
+    initForm: { enable: 1 },
     refresh: (_, keepCurrentPage) => $table.value?.handleSearch(keepCurrentPage),
   })
 

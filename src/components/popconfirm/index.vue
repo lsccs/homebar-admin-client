@@ -1,14 +1,13 @@
 <template>
-  <el-popover
-    trigger="click"
+  <n-popconfirm
     @positive-click="onConfirm"
   >
 
     <template #trigger>
-      {{ title }}
+      <slot></slot>
     </template>
-    <slot></slot>
-  </el-popover>
+    {{ title }}
+  </n-popconfirm>
 
 </template>
 

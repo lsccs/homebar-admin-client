@@ -1,13 +1,14 @@
 <template>
   <n-dropdown :options="options" @select="handleSelect">
     <div class="flex cursor-pointer items-center">
-      <n-avatar round :size="36" :src="userStore.avatar" />
+      <Avatar :size="36" :value="userStore.userInfo.avatar" />
       <div v-if="userStore.userInfo" class="ml-12 flex-col flex-shrink-0 items-center">
         <span class="text-14">{{ userStore.nick_name ?? userStore.username }}</span>
-        <span class="text-12 opacity-50">[{{ userStore.currentRole?.name }}]</span>
+        <span class="text-12 opacity-50">{{ userStore.currentRole?.name }}</span>
       </div>
     </div>
   </n-dropdown>
+
 
   <RoleSelect ref="roleSelectRef" />
 </template>
@@ -16,7 +17,7 @@
 import api from '@/api'
 import { RoleSelect } from '@/layouts/components'
 import { useAuthStore, usePermissionStore, useUserStore } from '@/store'
-
+import Avatar from '@/components/avatar/index.vue'
 const router = useRouter()
 const userStore = useUserStore()
 const authStore = useAuthStore()
@@ -33,7 +34,7 @@ const options = reactive([
     label: '切换角色',
     key: 'toggleRole',
     icon: () => h('i', { class: 'i-basil:exchange-solid text-14' }),
-    show: computed(() => userStore.roles.length > 1),
+    show: true,
   },
   {
     label: '退出登录',
@@ -51,7 +52,7 @@ function handleSelect(key) {
     case 'toggleRole':
       roleSelectRef.value?.open({
         onOk() {
-          location.reload()
+          router.replace('/?t=' + new Date().getTime())
         },
       })
       break

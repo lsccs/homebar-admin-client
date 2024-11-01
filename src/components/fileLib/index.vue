@@ -1,33 +1,31 @@
 <template>
   <div class="file-container">
     <div class="file-inner">
-      <n-tabs v-model:value="activeName" @update:value="load" animated>
-        <n-tab-pane tab="图片" name="image"></n-tab-pane>
-        <n-tab-pane tab="视频" name="video"></n-tab-pane>
-      </n-tabs>
       <div class="file-content">
         <div class="file-group-content">
           <div class="file-group-scroll">
-            <div
-              class="file-group"
-              :class="{ active: activeGroup === 0 }"
-              @click="handleSelectGroup(0)"
-            >
-              <span>全部</span>
-            </div>
-            <div
-              v-for="item in groupList"
-              :key="item.id"
-              class="file-group"
-              :class="{ active: activeGroup === item.id }"
-              @click="handleSelectGroup(item.id)"
-            >
-              <span>{{ item.name }}</span>
 
-              <PopConfirm title="确认删除该分组吗?" @confirm="deleteGroup(item)">
-                <i class="el-icon-close"  @click.stop></i>
-              </PopConfirm>
-            </div>
+            <n-tabs
+              class="group-list"
+              type="card"
+              animated
+              placement="left"
+              v-model:value="activeGroup"
+              closable
+              @update:value="handleSelectGroup"
+              @close="handleDeleteGroup"
+            >
+
+              <n-tab-pane :name="0" tab="全部" />
+
+              <n-tab-pane
+                v-for="item in groupList"
+                :name="item.id"
+                :tab="item.name"
+              />
+
+            </n-tabs>
+
           </div>
           <div v-if="!select" class="file-button-action">
             <PopAddContent title="新增分组" @submit="handleAddGroup" />
@@ -46,17 +44,15 @@
                 @change="onUpload"
               />
               <n-button
-                v-if="!select"
                 size="small"
                 type="primary"
-                class="mr-20"
+                class="mr-10"
                 @click="handleUpload"
               >上传
               </n-button>
-              <PopConfirm title="确认删除所选文件吗?" @confirm="handleDeleteFile">
+              <PopConfirm v-if="!select" title="确认删除所选文件吗?" @confirm="handleDeleteFile">
                 <n-button
-                  v-if="!select"
-                  class="mr-20"
+                  class="mr-10"
                   :disabled="!selectRows.length"
                   size="small"
                 >删除
@@ -66,22 +62,23 @@
             </div>
             <i class="el-icon-refresh refresh" @click="loadFileList" />
           </div>
-          <div class="flex-content-list">
-            <div v-loading="loading" class="flex-content-list-content">
-              <div v-show="!fileList.length" class="empty-tip">
-                <span>暂无数据</span>
+          <n-spin class="loading-spin" :show="loading">
+            <div class="flex-content-list">
+              <div class="flex-content-list-content">
+                <div v-show="!fileList.length" class="empty-tip">
+                  <span>暂无数据</span>
+                </div>
+                <FileItem
+                  v-for="item in fileList"
+                  :select="select"
+                  :key="item.id"
+                  v-bind="item"
+                  :file="item"
+                  :fileList="fileList"
+                  :active="isActive(item.id)"
+                  @select="updateActive(item)"
+                />
               </div>
-              <FileItem
-                v-for="item in fileList"
-                :select="select"
-                :key="item.id"
-                v-bind="item"
-                :file="item"
-                :fileList="fileList"
-                :active="isActive(item.id)"
-                @click="updateActive(item)"
-              />
-            </div>
 
             <div class="list-content-pagination">
               <pagination
@@ -92,6 +89,7 @@
               />
             </div>
           </div>
+          </n-spin>
         </div>
       </div>
     </div>
@@ -103,7 +101,7 @@ import FileItem from './fileItem.vue'
 import PopAddContent from '@/components/popAddContent/index.vue'
 import PopConfirm from '@/components/popconfirm/index.vue'
 
-import { fetchList, create, upload, getFileList, deleteFiles, remove } from '@/api/file'
+import API, { upload } from '@/api/file'
 
 import Pagination from '@/components/pagination/index.vue' // secondary package based on el-pagination
 
@@ -148,12 +146,15 @@ export default {
     getSelectRows() {
       return [...this.selectRows]
     },
+    setSelectRows(data) {
+      this.selectRows = [...data]
+    },
     load() {
       this.loadGroupList()
       this.loadFileList()
     },
     loadGroupList() {
-      fetchList({ type: this.activeName }).then((res) => {
+      API.fetchGroupList().then((res) => {
         this.groupList = res.data
       })
     },
@@ -162,8 +163,8 @@ export default {
       this.query.filters.group_id = this.activeGroup
         ? this.activeGroup
         : undefined
-      this.query.filters.type = this.activeName
-      getFileList(this.query)
+      // this.query.filters.type = this.activeName
+      API.fetchList(this.query)
         .then((res) => {
           setTimeout(() => {
             const { data } = res
@@ -177,18 +178,16 @@ export default {
         })
     },
     handleAddGroup(value, done) {
-      create({ name: value, type: this.activeName })
+      API.fetchGroupAdd({ name: value })
         .then(() => {
           this.loadGroupList()
         })
         .finally(done)
     },
-    deleteGroup(item) {
-      // e.stopPropagation()
-      remove({ id: item.id }).finally(this.loadGroupList)
+    handleDeleteGroup(id) {
+      API.fetchGroupDelete([id]).finally(this.loadGroupList)
     },
-    handleSelectGroup(value) {
-      this.activeGroup = value
+    handleSelectGroup() {
       this.loadFileList()
     },
     handleUpload() {
@@ -197,17 +196,13 @@ export default {
     onUpload(e) {
       this.loading = true
       const data = new FormData()
-      data.append('type', this.activeName)
-      data.append('group', this.activeGroup)
+      data.append('group_id', this.activeGroup)
       ;[...e.target.files].forEach((file) => {
         data.append('files', file)
       })
       upload(data)
         .then((res) => {
-          $message({
-            message: res.message,
-            type: 'success',
-          })
+          $message.success(res.message)
         })
         .finally(() => {
           this.loading = false
@@ -222,7 +217,7 @@ export default {
 
     handleDeleteFile() {
       this.loading = true
-      deleteFiles({ ids: this.selectRows.map(item => item.id) }).then(() => {
+      API.deleteFiles({ ids: this.selectRows.map(item => item.id) }).then(() => {
         this.selectRows = []
       }).finally(this.loadFileList)
     },
@@ -267,6 +262,18 @@ export default {
         padding-left: 20px;
         display: flex;
         flex-direction: column;
+
+        .loading-spin {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+
+          :deep(.n-spin-content) {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+          }
+        }
 
         .file-header {
           display: flex;
@@ -346,29 +353,48 @@ export default {
           overflow-y: auto;
           padding-bottom: 15px;
 
-          .file-group {
-            padding: 10px 9px 9px 25px;
-            transition: 0.25s;
-            cursor: pointer;
-            color: rgb(96, 98, 102);
-            font-size: 14px;
-            line-height: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+          .group-list {
+            height: 100%;
+            width: 100%;
 
-            .el-icon-close {
+            :deep(.n-tab-pane) {
               display: none;
             }
-            &:hover {
-              background: #f5f7fa;
-              .el-icon-close {
-                display: block;
-              }
-            }
 
-            &.active {
-              background: #eaeefe;
+            :deep(.n-tabs-nav--card-type) {
+              width: 100%;
+              flex-direction: column;
+
+              .n-tabs-pad {
+                border: none;
+              }
+
+              .n-tabs-tab[data-name='0'] {
+                .n-base-close {
+                  display: none !important;
+                }
+              }
+
+              .n-tabs-tab {
+                flex: 1;
+
+                .n-base-close {
+                  display: none;
+                }
+
+                &:hover .n-base-close {
+                  display: block;
+                }
+
+                &.n-tabs-tab--active {
+                  background-color: var(--n-tab-text-color-active);
+                  color: #fff;
+
+                  .n-base-close {
+                    color: #fff;
+                  }
+                }
+              }
             }
           }
         }

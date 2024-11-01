@@ -1,11 +1,3 @@
-<!--------------------------------
- - @Author: Ronnie Zhang
- - @LastEditor: Ronnie Zhang
- - @LastEditTime: 2023/12/05 21:29:56
- - @Email: zclzone@outlook.com
- - Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
- --------------------------------->
-
 <template>
   <CommonPage>
     <template #action>
@@ -91,6 +83,14 @@
           <n-input v-model:value="modalForm.password" />
         </n-form-item>
 
+        <n-form-item v-if="modalAction === 'add'" label="店铺" path="store_id">
+          <Select
+            v-model:value="modalForm.store_id"
+            :load-api="storeApi.read"
+            :multiple="false"
+          />
+        </n-form-item>
+
         <n-form-item v-if="modalAction === 'add'" label="状态" path="enable">
           <NSwitch v-model:value="modalForm.enable" :checked-value="1" :unchecked-value="0">
             <template #checked>
@@ -112,9 +112,11 @@
 <script setup>
 import { MeCrud, MeModal, MeQueryItem } from '@/components'
 import { useCrud } from '@/composables'
-import { formatDateTime } from '@/utils'
+import Select from '@/components/select/index.vue'
 import { NAvatar, NButton, NSwitch, NTag } from 'naive-ui'
 import api from './api'
+import storeApi from '@/views/store/api.js'
+import typeApi from "@/views/product_type/api.js";
 
 defineOptions({ name: 'UserMgt' })
 
