@@ -37,9 +37,10 @@ export default [
       component: 'Select',
       props: {
         options: unitOptions,
+        labelField: 'label',
+        valueField: 'value',
         'onUpdate:value'(value) {
           row[item.key] = value
-          console.log(value, 'ddd')
         }
       }
     })
