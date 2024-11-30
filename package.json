@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@arco-design/color": "^0.4.0",
+    "@tinymce/tinymce-vue": "^5",
     "@vueuse/core": "^11.0.3",
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",

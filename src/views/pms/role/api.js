@@ -9,12 +9,12 @@
 import { request } from '@/utils'
 
 export default {
-  read: (params = {}) => request.post('/admin/role/list', params),
-  update: data => request.post(`/admin/role/add_update`, data),
-  lineUpdate: data => request.put(`/admin/role/line_update`, data),
-  delete: ids => request.delete(`/admin/role/delete`, { data: { ids } }),
-  detail: id => request.get(`/admin/role/permission?id=${id}`),
+  read: (params = {}) => request.post('/m/web/role/list', params),
+  update: data => request.post(`/m/web/role/add_update`, data),
+  lineUpdate: data => request.put(`/m/web/role/line_update`, data),
+  delete: ids => request.delete(`/m/web/role/delete`, { data: { ids } }),
+  detail: id => request.get(`/m/web/role/permission?id=${id}`),
 
-  getAllPermissionTree: () => request.get('/admin/permission/all_tree'),
+  getAllPermissionTree: () => request.get('/m/web/permission/all_tree'),
 
 }

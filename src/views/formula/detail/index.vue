@@ -15,17 +15,17 @@ const columns = [
   {
     label: '配方名称',
     key: 'name',
-    span: 3
+    span: 24
   },
   {
     label: '描述',
     key: 'remark',
-    span: 3
+    span: 24
   },
   {
     label: '原料',
     key: 'raw',
-    span: 3,
+    span: 24,
     render(row) {
       return h(EditTable, {
         readonly: true,

@@ -45,7 +45,6 @@ export function getDictList() {
 export function getDictMap(key, value) {
   const dict = lStorage.get('dict')
   const current = dict[key]
-
   if (!current) {
     return null
   }
@@ -53,7 +52,6 @@ export function getDictMap(key, value) {
     acc[item.value] = item
     return acc
   }, {})
-
   return map[value]?.label || ''
 }
 // 获取下拉数据
