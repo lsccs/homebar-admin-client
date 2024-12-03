@@ -10,17 +10,17 @@ import { request } from '@/utils'
 
 export default {
   // 获取用户信息
-  getUser: () => request.get('/admin/user/ex_detail'),
+  getUser: () => request.get('/m/web/user/ex_detail'),
   // 刷新token
   refreshToken: () => request.get('/auth/refresh/token'),
   // 登出
   logout: () => request.post('/auth/logout', {}, { needTip: false }),
   // 切换当前角色
-  switchCurrentRole: role => request.put(`/admin/user/switch_role`, { role_id: role }),
+  switchCurrentRole: role => request.put(`/m/web/user/switch_role`, { role_id: role }),
   // 获取角色权限
-  getRolePermissions: () => request.get('/admin/permission/tree'),
+  getRolePermissions: () => request.get('/m/web/permission/tree'),
   // 验证菜单路径
-  validateMenuPath: path => request.get(`/admin/permission/validate?path=${path}`),
+  validateMenuPath: path => request.get(`/m/web/permission/validate?path=${path}`),
   // 获取枚举字典
-  getDictList: () => request.get(`/system/dict`),
+  getDictList: () => request.get(`/m/web/dict`),
 }
