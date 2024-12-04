@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router
 import { basicRoutes } from './basic-routes'
 import { setupRouterGuards } from './guards'
 
+
 export const router = createRouter({
   history:
     import.meta.env.VITE_USE_HASH === 'true'

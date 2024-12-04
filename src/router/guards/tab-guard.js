@@ -1,6 +1,7 @@
 import { useTabStore } from '@/store'
+import { WEB_VIEW } from "@/router/web-view.js";
 
-export const EXCLUDE_TAB = ['/404', '/403', '/login']
+export const EXCLUDE_TAB = ['/404', '/403', '/login', ...WEB_VIEW]
 
 export function createTabGuard(router) {
   router.afterEach((to) => {

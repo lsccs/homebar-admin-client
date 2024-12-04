@@ -1,15 +1,26 @@
+import {WEB_VIEW} from "@/router/web-view.js";
+import {layoutSettingVisible} from "@/settings.js";
+
 export function createPageLoadingGuard(router) {
-  router.beforeEach(() => {
-    $loadingBar.start()
+  router.beforeEach((to) => {
+    const isWebView = WEB_VIEW.includes(to.path)
+    layoutSettingVisible.value = !isWebView;
+    if (!isWebView) {
+      $loadingBar.start()
+    }
   })
 
-  router.afterEach(() => {
+  router.afterEach((to) => {
     setTimeout(() => {
-      $loadingBar.finish()
+      if (!WEB_VIEW.includes(to.path)) {
+        $loadingBar.finish()
+      }
     }, 200)
   })
 
-  router.onError(() => {
-    $loadingBar.error()
+  router.onError((to) => {
+    if (!WEB_VIEW.includes(to.path)) {
+      $loadingBar.error()
+    }
   })
 }

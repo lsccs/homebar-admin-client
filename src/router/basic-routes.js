@@ -1,3 +1,4 @@
+
 export const basicRoutes = [
   {
     name: 'Login',
@@ -15,6 +16,17 @@ export const basicRoutes = [
     component: () => import('@/views/home/index.vue'),
     meta: {
       title: '首页',
+    },
+  },
+
+  // 活动 web-view
+  {
+    name: 'Activity',
+    path: '/web-view/activity',
+    component: () => import('@/views/web-view/activity.vue'),
+    meta: {
+      title: '活动',
+      layout: 'empty',
     },
   },
 

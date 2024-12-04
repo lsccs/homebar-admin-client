@@ -1,17 +1,19 @@
 import api from '@/api'
 import { useAuthStore, usePermissionStore, useUserStore } from '@/store'
 import { getPermissions, getUserInfo, getDictList } from '@/store/helper'
+import { WEB_VIEW } from "@/router/web-view.js";
 
-const WHITE_LIST = ['/login', '/404']
+const WHITE_LIST = ['/login', '/404', ...WEB_VIEW]
 export function createPermissionGuard(router) {
   router.beforeEach(async (to) => {
     const authStore = useAuthStore()
     const token = authStore.getToken()
     /** 没有token */
     if (!token) {
-      if (WHITE_LIST.includes(to.path))
+      if (WHITE_LIST.includes(to.path)) {
         return true
-      return { path: 'login', query: { ...to.query, redirect: to.path } }
+      }
+      return { path: '/login', query: { ...to.query, redirect: to.path } }
     }
 
     // 有token的情况
