@@ -8,10 +8,16 @@
         </div>
 
       </div>
-      <div v-if="type === 'video'" class="video" :class="{ active }">
-        <video ref="video" :src="url" />
+      <div v-else-if="type === 'video'" class="video" :class="{ active }">
+        <video ref="video" :src="url" poster="../../assets/icons/video.svg" />
         <div class="mask">
           <i :class="`i-fe:check`" />
+        </div>
+      </div>
+      <div v-else class="doc" :class="{ active }">
+        <img :src="urlMap[type]" />
+        <div class="mask">
+          <i :class="`i-fe:check bg-primary text-24`" />
         </div>
       </div>
     </div>
@@ -39,6 +45,9 @@
 import PopAddContent from '@/components/popAddContent/index.vue'
 import API from '@/api/file'
 
+import PdfSvg from '@/assets/icons/pdf.svg'
+import UnknownSvg from '@/assets/icons/unknown.svg'
+import XlsxSvg from '@/assets/icons/xlsx.svg'
 
 export default {
   components: { PopAddContent },
@@ -81,7 +90,13 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      urlMap: {
+        pdf: PdfSvg,
+        unknown: UnknownSvg,
+        xlsx: XlsxSvg,
+      }
+    }
   },
   mounted() {
     if (this.$refs.video) {
@@ -113,22 +128,21 @@ export default {
     },
     handlePreview(e) {
       e.stopPropagation()
-      if (this.type === 'image') {
-        this.$viewerApi({
-          images: this.fileList.map(item => item.path),
-        })
-        return
+      if (this.type === 'video') {
+        const video = this.$refs.video
+        if (video.requestFullscreen) {
+          video.requestFullscreen();
+        } else if (video.mozRequestFullScreen) { // Firefox
+          video.mozRequestFullScreen();
+        } else if (video.webkitRequestFullscreen) { // Chrome, Safari and Opera
+          video.webkitRequestFullscreen();
+        } else if (video.msRequestFullscreen) { // IE/Edge
+          video.msRequestFullscreen();
+        }
+      } else {
+        window.open(this.url)
       }
-      const video = this.$refs.video
-      if (video.requestFullscreen) {
-        video.requestFullscreen();
-      } else if (video.mozRequestFullScreen) { // Firefox
-        video.mozRequestFullScreen();
-      } else if (video.webkitRequestFullscreen) { // Chrome, Safari and Opera
-        video.webkitRequestFullscreen();
-      } else if (video.msRequestFullscreen) { // IE/Edge
-        video.msRequestFullscreen();
-      }
+
     }
   },
 }
@@ -192,7 +206,7 @@ export default {
     height: 120px;
 
     .image,
-    .video {
+    .video, .doc {
       position: relative;
       width: 100%;
       height: 100%;

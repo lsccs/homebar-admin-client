@@ -4,7 +4,7 @@
             <n-skeleton text :repeat="2" />
             <n-skeleton text style="width: 60%" />
         </div>
-     
+
         <div v-show="!loading">
             <Editor
                 api-key="mx14ocam78ov0xq48hwbs4xg5zogsxv3r8s2zepvvm4gxzq0"
@@ -81,13 +81,13 @@ function setup(editor) {
 
    function insertContent(value) {
         editorRef.execCommand('mceInsertContent', false, value)
-    }
+   }
 
   function addFile(files) {
-    console.log(files, 'okokko')
       files.forEach((file) => {
         let value;
-        if (!file.type || file.type === 'image') {
+        value = `<a href="${file.url}" target="_blank">${file.file_name}.${file.suffix}</a>`
+        if (file.type === 'image') {
           value = `<img style="width: 100%;height: 100%" src="${file.url}">`
         }
         if (file.type === 'video') {
