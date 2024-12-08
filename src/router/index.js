@@ -12,6 +12,11 @@ export const router = createRouter({
   scrollBehavior: () => ({ left: 0, top: 0 }),
 })
 
+router.onError((error) => {
+  console.log(error, 'error router');
+  
+})
+
 export async function setupRouter(app) {
   app.use(router)
   setupRouterGuards(router)

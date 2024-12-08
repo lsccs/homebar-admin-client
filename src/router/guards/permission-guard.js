@@ -7,20 +7,23 @@ const WHITE_LIST = ['/login', '/404', ...WEB_VIEW]
 export function createPermissionGuard(router) {
   router.beforeEach(async (to) => {
     const authStore = useAuthStore()
-    const token = authStore.getToken()
-    /** 没有token */
-    if (!token) {
-      if (WHITE_LIST.includes(to.path)) {
-        return true
-      }
-      return { path: '/login', query: { ...to.query, redirect: to.path } }
-    }
-
-    // 有token的情况
-    if (to.path === '/login')
-      return { path: '/' }
-    if (WHITE_LIST.includes(to.path))
+    // const token = authStore.getToken()
+    // /** 没有token */
+    // if (!token) {
+    //   if (WHITE_LIST.includes(to.path)) {
+    //     return true
+    //   }
+    //   return { path: '/login', query: { ...to.query, redirect: to.path } }
+    // }
+    // // 有token的情况
+    // if (to.path === '/login') {
+    //   return { path: '/' }
+    // }
+      
+    if (WHITE_LIST.includes(to.path)) {
       return true
+    }
+      
 
     const userStore = useUserStore()
     const permissionStore = usePermissionStore()
