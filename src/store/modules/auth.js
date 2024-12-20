@@ -6,6 +6,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({}),
   actions: {
     getToken() {
+      console.log(Cookies.get('satoken'), 'getsatken')
       return Cookies.get('satoken')
     },
     toLogin() {

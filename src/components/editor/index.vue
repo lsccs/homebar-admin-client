@@ -84,6 +84,7 @@ function setup(editor) {
       files.forEach((file) => {
         let value;
         value = `<a href="${file.url}" target="_blank">${file.file_name}.${file.suffix}</a>`
+        console.log(file, 'filefilefile')
         if (file.type === 'image') {
           value = `<img style="width: 100%;height: 100%" src="${file.url}">`
         }

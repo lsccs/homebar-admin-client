@@ -104,7 +104,7 @@ export default {
 
     transferFileList(rows) {
       this.originFileList = rows;
-      this.fileList = rows?.map(item => ({ id: item.id, name: item.file_name, url: item.url, thumbnailUrl: item.url, status: 'finished' })) || [];
+      this.fileList = rows?.map(item => ({ id: item.id, name: item.file_name, type: item.type, url: item.url, thumbnailUrl: item.url, status: 'finished' })) || [];
     },
 
     handleRemove({ index }) {
