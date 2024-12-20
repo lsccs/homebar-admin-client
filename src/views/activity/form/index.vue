@@ -8,7 +8,7 @@
         :model="modalForm"
     >
     <n-form-item
-        label="配方名称"
+        label="活动名称"
         path="name"
         :rule="{
             required: true,
@@ -55,7 +55,7 @@
         </NSwitch>
     </n-form-item>
 
- 
+
 
     <n-form-item
         label="内容"
@@ -63,16 +63,16 @@
     >
         <Editor v-model:value="modalForm.content" />
     </n-form-item>
-    
+
     </n-form>
 
-    
+
     <div class="form-action">
         <n-button @click="handleCancel">取消</n-button>
         <n-button type="primary" @click="handleSubmit">提交</n-button>
     </div>
 </LayoutDefault>
-   
+
 </template>
 
 <script setup>
